@@ -3,187 +3,479 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Yearly Wheel</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Yearly Wheel — Intellishore</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%); color: #1e293b; min-height: 100vh; }
 
-  .header { padding: 20px 28px; border-bottom: 1px solid #e2e8f0; background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-  .header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
-  .header .dot { color: #2563eb; }
-  .header .sub { font-size: 13px; color: #64748b; margin-top: 4px; }
-  .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  :root {
+    --bg: #F5F4F1;
+    --surface: #FFFFFF;
+    --border: #E5E3DE;
+    --text: #1A1A1A;
+    --text2: #6B6560;
+    --text3: #A09A93;
+    --accent: #1A1A1A;
 
-  .btn { padding: 9px 18px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; font-family: inherit; transition: all 0.15s; }
-  .btn-s { background: #fff; color: #475569; border: 1px solid #e2e8f0; }
-  .btn-s:hover { background: #f8fafc; }
+    /* Internal — Blues */
+    --int-teambuilding: #14506A;
+    --int-guild: #2874A6;
+    --int-social: #5DADE2;
+    --int-ring: rgba(20,80,106,0.06);
+
+    /* External — Reds */
+    --ext-webinars: #922B21;
+    --ext-conferences: #C0392B;
+    --ext-health: #E74C3C;
+    --ext-ring: rgba(192,57,43,0.06);
+
+    /* Marketing — Greens */
+    --mkt-strategy: #0E4D3A;
+    --mkt-ai: #1E8449;
+    --mkt-ae: #27AE60;
+    --mkt-ring: rgba(30,132,73,0.06);
+  }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    padding: 18px 32px;
+    background: var(--text);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .logo {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .logo-sub {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.04em;
+  }
+
+  /* Time nav */
+  .time-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 4px;
+  }
+  .time-nav button {
+    width: 32px; height: 32px;
+    border: none; background: transparent;
+    color: rgba(255,255,255,0.7);
+    font-size: 16px; cursor: pointer;
+    border-radius: 6px;
+    font-family: inherit;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .time-nav button:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .time-nav .period {
+    padding: 4px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    min-width: 140px;
+    text-align: center;
+  }
+  .view-btns { display: flex; gap: 2px; margin-left: 8px; }
+  .view-btns button {
+    padding: 6px 14px; border: none; background: transparent;
+    color: rgba(255,255,255,0.5); font-size: 12px; font-weight: 600;
+    cursor: pointer; border-radius: 6px; font-family: inherit;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .view-btns button.active { background: rgba(255,255,255,0.15); color: #fff; }
+  .view-btns button:hover { color: #fff; }
 
   /* Loading */
-  .ld { position: fixed; inset: 0; background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; transition: opacity 0.3s; }
-  .ld.out { opacity: 0; pointer-events: none; }
-  .sp { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: #2563eb; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
+  .loading {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; z-index: 100;
+    transition: opacity 0.3s;
+  }
+  .loading.out { opacity: 0; pointer-events: none; }
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--text);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-bottom: 16px;
+  }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .ld .m { font-size: 15px; font-weight: 600; color: #475569; }
-  .ld .s { font-size: 13px; color: #94a3b8; margin-top: 6px; }
+  .loading .msg { font-size: 14px; font-weight: 600; color: var(--text2); }
 
-  /* Upload banner */
-  .upload-bar { padding: 10px 28px; background: #fffbeb; border-bottom: 1px solid #fde68a; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 13px; color: #92400e; }
-  .upload-bar .lbl { font-weight: 600; }
-  .upload-bar .filebtn { padding: 6px 14px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 600; color: #475569; }
-  .upload-bar .filebtn:hover { background: #f8fafc; }
+  /* Upload bar */
+  .upload-bar {
+    padding: 10px 32px;
+    background: #FFF8E1;
+    border-bottom: 1px solid #FFE082;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: #5D4037;
+  }
+  .upload-bar strong { font-weight: 600; }
+  .file-btn {
+    padding: 5px 12px;
+    background: #fff;
+    border: 1px solid #E0E0E0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    color: var(--text2);
+  }
 
-  /* Main layout */
-  .ml { display: flex; max-width: 1200px; margin: 0 auto; min-height: calc(100vh - 85px); }
-  .sb { width: 250px; padding: 24px 20px; border-right: 1px solid #e2e8f0; background: rgba(255,255,255,0.6); overflow-y: auto; flex-shrink: 0; }
-  .sr { width: 270px; padding: 24px 20px; border-left: 1px solid #e2e8f0; background: rgba(255,255,255,0.6); overflow-y: auto; flex-shrink: 0; }
-  .wa { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px; min-width: 0; }
-  .st { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; margin-bottom: 10px; }
-  .qa { margin-bottom: 8px; }
-  .qa button { font-size: 11px; background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; margin-right: 10px; }
-  .qa .a { color: #2563eb; }
-  .qa .n { color: #94a3b8; }
+  /* Main */
+  .main { display: flex; height: calc(100vh - 56px); overflow: hidden; }
 
-  .ci { display: flex; align-items: center; gap: 8px; padding: 6px 0; cursor: pointer; font-size: 13px; }
-  .cb { width: 18px; height: 18px; border-radius: 4px; border: 2px solid; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
-  .cb .ck { color: #fff; font-size: 11px; font-weight: 700; }
-  .cl { font-weight: 500; }
-  .cl.off { color: #94a3b8; }
-  .cc { margin-left: auto; font-size: 11px; color: #94a3b8; }
+  /* Left sidebar — filters */
+  .filters {
+    width: 260px;
+    padding: 24px 20px;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  .filter-section { margin-bottom: 24px; }
+  .filter-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .main-cat {
+    margin-bottom: 16px;
+  }
+  .main-cat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .main-cat-header .indicator {
+    width: 14px; height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .sub-cat-list { padding-left: 22px; }
+  .sub-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .sub-box {
+    width: 14px; height: 14px;
+    border-radius: 3px;
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .sub-box .ck { color: #fff; font-size: 9px; font-weight: 700; }
+  .sub-label { font-weight: 500; color: var(--text); }
+  .sub-label.off { color: var(--text3); }
+  .sub-count { margin-left: auto; font-size: 10px; color: var(--text3); font-weight: 600; }
 
-  .lg { border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 8px; font-size: 12px; color: #64748b; line-height: 1.8; }
+  /* Wheel area */
+  .wheel-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    min-width: 0;
+    background: var(--bg);
+  }
+  #wsvg { width: 100%; max-width: 680px; height: auto; }
 
-  .ed { margin-top: 16px; padding: 16px; background: #fff; border-radius: 10px; border: 1px solid #e2e8f0; }
-  .ed .tg { display: inline-block; padding: 2px 8px; border-radius: 4px; color: #fff; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
-  .ed h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-  .ed .mt { font-size: 12px; color: #64748b; margin-bottom: 8px; }
-  .ed .ds { font-size: 12px; color: #475569; line-height: 1.5; }
+  /* Right sidebar — detail */
+  .detail-panel {
+    width: 300px;
+    border-left: 1px solid var(--border);
+    background: var(--surface);
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .detail-header {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .detail-header .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--text3);
+  }
+  .event-card {
+    padding: 20px;
+    flex: 1;
+  }
+  .event-card.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text3);
+    font-size: 13px;
+    font-style: italic;
+  }
+  .ev-tags { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .ev-tag {
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #fff;
+  }
+  .ev-tag.outline {
+    color: var(--text2);
+    background: transparent;
+    border: 1px solid var(--border);
+  }
+  .ev-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .ev-date { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
+  .ev-field { margin-bottom: 16px; }
+  .ev-field-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text3); margin-bottom: 4px;
+  }
+  .ev-field-value { font-size: 13px; color: var(--text); line-height: 1.5; }
+  .ev-field-value a { color: #2874A6; text-decoration: none; font-weight: 500; }
+  .ev-field-value a:hover { text-decoration: underline; }
 
-  .ei { padding: 10px 12px; margin-bottom: 4px; border-radius: 8px; cursor: pointer; transition: all 0.15s; border: 1px solid transparent; }
-  .ei:hover { background: #f8fafc; }
-  .ei.sel { background: #eff6ff; border-color: #bfdbfe; }
-  .ei .rw { display: flex; align-items: center; gap: 8px; }
-  .ei .dt { width: 8px; height: 8px; flex-shrink: 0; }
-  .ei .dt.int { border-radius: 50%; }
-  .ei .dt.ext { border-radius: 0; transform: rotate(45deg); }
-  .ei .nm { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .ei .inf { font-size: 11px; color: #94a3b8; margin-top: 2px; padding-left: 16px; }
+  /* Event list (below detail) */
+  .event-list-container {
+    border-top: 1px solid var(--border);
+    padding: 16px 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .event-list-container .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--text3); margin-bottom: 10px;
+  }
+  .ev-list-item {
+    padding: 8px 10px;
+    margin-bottom: 2px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.12s;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ev-list-item:hover { background: var(--bg); }
+  .ev-list-item.sel { background: #F0F4F8; border-color: #CBD5E1; }
+  .ev-list-item .dot {
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .ev-list-item .info { flex: 1; min-width: 0; }
+  .ev-list-item .nm { font-size: 12px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ev-list-item .meta { font-size: 10px; color: var(--text3); margin-top: 1px; }
 
-  #wsvg { width: 100%; max-width: 700px; height: auto; }
+  /* Drop overlay */
+  #drop-ov {
+    display: none; position: fixed; inset: 0;
+    background: rgba(26,26,26,0.08); z-index: 200;
+    pointer-events: none; backdrop-filter: blur(2px);
+  }
+  #drop-ov > div {
+    position: absolute; inset: 30px;
+    border: 3px dashed var(--text3);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #drop-ov .msg { font-size: 18px; font-weight: 700; color: var(--text2); }
+
   .hd { display: none !important; }
 
-  @media (max-width: 1000px) {
-    .ml { flex-direction: column; }
-    .sb, .sr { width: 100%; border: none; border-bottom: 1px solid #e2e8f0; }
-    .sr { border-bottom: none; border-top: 1px solid #e2e8f0; }
+  /* Footer */
+  .footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 8px 32px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text3);
+    z-index: 10;
+  }
+  .footer .brand { font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+  .footer .tagline { font-style: italic; }
+
+  @media (max-width: 1100px) {
+    .main { flex-direction: column; height: auto; }
+    .filters, .detail-panel { width: 100%; border: none; border-bottom: 1px solid var(--border); }
+    .detail-panel { border-top: 1px solid var(--border); }
   }
 </style>
 </head>
 <body>
 
-<!-- Loading -->
-<div class="ld" id="ld">
-  <div class="sp"></div>
-  <div class="m">Loading events…</div>
-  <div class="s" id="ld-s"></div>
-</div>
+<div class="loading" id="ld"><div class="spinner"></div><div class="msg">Loading events…</div></div>
 
-<!-- Header -->
-<div class="header hd" id="hdr">
-  <div>
-    <h1><span class="dot">●</span> Yearly Wheel</h1>
-    <p class="sub" id="sub"></p>
-  </div>
-  <div class="header-actions">
-    <button class="btn btn-s" onclick="resetF()">Reset Filters</button>
-  </div>
-</div>
-
-<!-- Upload bar (shown when using sample data) -->
-<div class="upload-bar hd" id="ubar">
-  <span class="lbl">📊 Upload your data:</span>
-  <span>Export your SharePoint list to CSV and drop it here, or</span>
-  <label class="filebtn">
-    Choose File
-    <input type="file" id="fi" accept=".xlsx,.xls,.csv" hidden>
-  </label>
-  <span style="color:#b45309;">Place an <strong>events.csv</strong> in the same folder as this file to auto-load.</span>
-</div>
-
-<!-- Drop overlay -->
-<div id="drop-ov" style="display:none;position:fixed;inset:0;background:rgba(37,99,235,0.12);z-index:200;pointer-events:none;backdrop-filter:blur(2px);">
-  <div style="position:absolute;inset:40px;border:3px dashed #2563eb;border-radius:20px;display:flex;align-items:center;justify-content:center;">
-    <div style="font-size:20px;font-weight:700;color:#2563eb;">Drop CSV or Excel file here</div>
-  </div>
-</div>
-
-<!-- Main -->
-<div class="ml hd" id="mv">
-  <div class="sb">
-    <div style="margin-bottom:24px">
-      <div class="st">Categories</div>
-      <div class="qa"><button class="a" onclick="selA()">All</button><button class="n" onclick="selN()">None</button></div>
-      <div id="cf"></div>
+<div class="hd" id="app">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div>
+        <div class="logo">Intellishore</div>
+      </div>
+      <div class="logo-sub">Yearly Wheel</div>
     </div>
-    <div style="margin-bottom:24px">
-      <div class="st">Type</div>
-      <div id="tf"></div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="time-nav">
+        <button onclick="prevPeriod()" title="Previous">◂</button>
+        <div class="period" id="period-label"></div>
+        <button onclick="nextPeriod()" title="Next">▸</button>
+      </div>
+      <div class="view-btns">
+        <button class="active" id="btn-year" onclick="setView('year')">Year</button>
+        <button id="btn-h1" onclick="setView('h1')">H1</button>
+        <button id="btn-h2" onclick="setView('h2')">H2</button>
+        <button id="btn-q1" onclick="setView('q1')">Q1</button>
+        <button id="btn-q2" onclick="setView('q2')">Q2</button>
+        <button id="btn-q3" onclick="setView('q3')">Q3</button>
+        <button id="btn-q4" onclick="setView('q4')">Q4</button>
+      </div>
     </div>
-    <div class="lg">
-      <div class="st">Legend</div>
-      <div>● Circle = Internal</div>
-      <div>▲ Triangle = External</div>
-    </div>
-    <div id="evd"></div>
   </div>
-  <div class="wa"><svg id="wsvg" viewBox="0 0 700 700"></svg></div>
-  <div class="sr">
-    <div class="st" id="elt">Events (0)</div>
-    <div id="el"></div>
+
+  <!-- Upload bar -->
+  <div class="upload-bar hd" id="ubar">
+    <strong>📊 Sample data</strong>
+    <span>Drop a CSV/Excel file or</span>
+    <label class="file-btn">Choose File<input type="file" id="fi" accept=".xlsx,.xls,.csv" hidden></label>
+    <span style="color:#8D6E63">Place <strong>events.csv</strong> alongside this file to auto-load.</span>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filter-section">
+        <div class="filter-title">Categories</div>
+        <div id="cat-filters"></div>
+      </div>
+    </div>
+
+    <!-- Wheel -->
+    <div class="wheel-area">
+      <svg id="wsvg" viewBox="0 0 700 700"></svg>
+    </div>
+
+    <!-- Detail + List -->
+    <div class="detail-panel">
+      <div class="detail-header">
+        <div class="section-label">Event Details</div>
+      </div>
+      <div id="ev-card" class="event-card empty">Click an event to view details</div>
+      <div class="event-list-container">
+        <div class="section-label" id="ev-list-title">Events (0)</div>
+        <div id="ev-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="brand">Intellishore</span>
+    <span class="tagline">Build for better lives</span>
+    <span id="footer-date"></span>
   </div>
 </div>
+
+<div id="drop-ov"><div><span class="msg">Drop CSV or Excel file here</span></div></div>
 
 <script>
-/* ══════════════════════════════════════════════
-   CONFIG: Name of the CSV file to auto-load.
-   Place this file next to the HTML file.
-   Export from SharePoint: List toolbar → Export → CSV
-   ══════════════════════════════════════════════ */
+/* ══ CONFIG ══ */
 var CSV_FILE = "events.csv";
 
-/* ── State ── */
-var allEv=[], allCats=[], aCats, aTypes, hovI=null, selI=null, useSample=false;
-var COLORS=["#2563eb","#dc2626","#16a34a","#ea580c","#7c3aed","#0891b2","#ca8a04","#be185d","#4f46e5","#059669","#d97706","#9333ea","#0d9488","#e11d48","#6d28d9"];
-var MO=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+/* ══ Category / color schema ══ */
+var SCHEMA = {
+  "Internal": {
+    color: "#14506A",
+    ring: 0, /* inner */
+    subs: {
+      "Teambuilding Days": "#14506A",
+      "Associate Guild":   "#2874A6",
+      "Social Events":     "#5DADE2"
+    }
+  },
+  "External": {
+    color: "#C0392B",
+    ring: 1, /* middle */
+    subs: {
+      "Webinars":    "#922B21",
+      "Conferences": "#C0392B",
+      "Health 3.0":  "#E74C3C"
+    }
+  },
+  "Marketing": {
+    color: "#1E8449",
+    ring: 2, /* outer */
+    subs: {
+      "Strategy": "#0E4D3A",
+      "AI":       "#1E8449",
+      "AE":       "#27AE60"
+    }
+  }
+};
 
-var SAMPLE=[
-  {date:new Date(2026,0,15),name:"Kickoff Meeting",category:"Strategy",type:"Internal",description:"Annual strategy kickoff for all departments"},
-  {date:new Date(2026,1,1),name:"Q1 Budget Review",category:"Finance",type:"Internal",description:"Quarterly budget review with finance team"},
-  {date:new Date(2026,1,14),name:"Industry Conference",category:"Marketing",type:"External",description:"Annual industry conference and networking"},
-  {date:new Date(2026,2,10),name:"Product Launch v2.0",category:"Product",type:"External",description:"Major product release to customers"},
-  {date:new Date(2026,2,22),name:"Team Building Day",category:"HR",type:"Internal",description:"Company-wide team building activities"},
-  {date:new Date(2026,3,5),name:"Board Meeting Q1",category:"Strategy",type:"Internal",description:"Q1 board of directors meeting"},
-  {date:new Date(2026,3,18),name:"Partner Summit",category:"Sales",type:"External",description:"Annual partner summit and awards"},
-  {date:new Date(2026,4,1),name:"Hackathon",category:"Engineering",type:"Internal",description:"48-hour innovation hackathon"},
-  {date:new Date(2026,4,20),name:"Trade Show Berlin",category:"Marketing",type:"External",description:"European trade show exhibition"},
-  {date:new Date(2026,5,15),name:"Mid-Year Review",category:"HR",type:"Internal",description:"Mid-year performance reviews"},
-  {date:new Date(2026,5,28),name:"Customer Day",category:"Sales",type:"External",description:"Annual customer appreciation event"},
-  {date:new Date(2026,6,4),name:"Summer Party",category:"HR",type:"Internal",description:"Annual summer celebration"},
-  {date:new Date(2026,6,19),name:"Security Audit",category:"Engineering",type:"Internal",description:"Annual security compliance audit"},
-  {date:new Date(2026,7,10),name:"Q3 Planning",category:"Strategy",type:"Internal",description:"Q3 strategic planning sessions"},
-  {date:new Date(2026,7,25),name:"Webinar Series",category:"Marketing",type:"External",description:"Public webinar series launch"},
-  {date:new Date(2026,8,5),name:"All Hands",category:"Strategy",type:"Internal",description:"Company all-hands meeting"},
-  {date:new Date(2026,8,18),name:"Product Conf",category:"Product",type:"External",description:"Annual product conference"},
-  {date:new Date(2026,9,1),name:"Q4 Budget",category:"Finance",type:"Internal",description:"Q4 budget planning and allocation"},
-  {date:new Date(2026,9,15),name:"Charity Gala",category:"HR",type:"External",description:"Annual corporate charity gala"},
-  {date:new Date(2026,10,1),name:"Black Friday Prep",category:"Sales",type:"Internal",description:"Preparation for holiday sales"},
-  {date:new Date(2026,10,20),name:"Tech Summit",category:"Engineering",type:"External",description:"Technology leadership summit"},
-  {date:new Date(2026,11,5),name:"Board Meeting Q4",category:"Strategy",type:"Internal",description:"Q4 board of directors meeting"},
-  {date:new Date(2026,11,18),name:"Holiday Party",category:"HR",type:"Internal",description:"Annual holiday celebration"}
-];
+var MAIN_CATS = Object.keys(SCHEMA);
+var MO = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var MO_FULL = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-/* ── Parsing ── */
+/* ══ State ══ */
+var allEv=[], activeSubs=new Set(), hovI=null, selI=null, useSample=false;
+var viewYear=2026, viewMode="year"; // year, h1, h2, q1-q4
+
+/* ══ Parsing ══ */
 function pDate(v){
   if(!v)return null;
   if(v instanceof Date)return isNaN(v)?null:v;
@@ -194,152 +486,219 @@ function pDate(v){
   if(m)return new Date(+m[3],+m[1]-1,+m[2]);
   m=s.match(/^(\d{1,2})[\-.](\d{1,2})[\-.](\d{4})/);
   if(m)return new Date(+m[3],+m[2]-1,+m[1]);
-  var d=new Date(s);
-  return isNaN(d)?null:d;
+  var d=new Date(s);return isNaN(d)?null:d;
 }
 function fCol(keys,pats){for(var p=0;p<pats.length;p++){for(var k=0;k<keys.length;k++){if(pats[p].test(keys[k]))return keys[k];}}return null;}
-
 function parseRows(raw){
   var rows=[];
   for(var i=0;i<raw.length;i++){
     var r=raw[i],keys=Object.keys(r);
-    var dk=fCol(keys,[/^Date$/i,/^date/i,/date/i]);
-    var nk=fCol(keys,[/^Title$/i,/^Name$/i,/^Event$/i,/title/i,/name/i,/event/i]);
-    var ck=fCol(keys,[/^Category$/i,/^cat/i,/cat/i]);
-    var tk=fCol(keys,[/^type$/i,/^Type$/i,/type/i,/scope/i]);
-    var xk=fCol(keys,[/^Description$/i,/^desc/i,/desc/i]);
+    var dk=fCol(keys,[/^Date$/i,/date/i]);
+    var nk=fCol(keys,[/^Title$/i,/^Name$/i,/title/i,/name/i]);
+    var mk=fCol(keys,[/^MainCat/i,/^main/i,/^type$/i]);
+    var sk=fCol(keys,[/^SubCat/i,/^sub/i,/^category$/i]);
+    var xk=fCol(keys,[/^Desc/i,/desc/i]);
+    var ok=fCol(keys,[/^Owner/i,/owner/i]);
+    var lk=fCol(keys,[/^Link$/i,/^URL$/i,/link/i,/url/i]);
     var date=dk?pDate(r[dk]):null;
     if(!date)continue;
-    rows.push({date:date,name:String(r[nk]||"").trim()||"(Untitled)",category:String(r[ck]||"Other").trim(),type:String(r[tk]||"").trim(),description:String(r[xk]||"").trim()});
+    rows.push({
+      date:date,
+      name:String(r[nk]||"").trim()||"(Untitled)",
+      mainCat:String(r[mk]||"Internal").trim(),
+      subCat:String(r[sk]||"Other").trim(),
+      description:String(r[xk]||"").trim(),
+      owner:String(r[ok]||"").trim(),
+      link:String(r[lk]||"").trim()
+    });
   }
   rows.sort(function(a,b){return a.date-b.date;});
   return rows;
 }
-
 function parseCSV(text){
-  // Handle quoted fields properly
-  var lines=[];
-  var current=[];
-  var field="";
-  var inQuotes=false;
+  var lines=[],cur=[],field="",inQ=false;
   for(var i=0;i<text.length;i++){
     var c=text[i];
-    if(inQuotes){
-      if(c==='"'){
-        if(i+1<text.length&&text[i+1]==='"'){field+='"';i++;}
-        else inQuotes=false;
-      } else field+=c;
-    } else {
-      if(c==='"')inQuotes=true;
-      else if(c===','){current.push(field.trim());field="";}
-      else if(c==='\n'||c==='\r'){
-        if(c==='\r'&&i+1<text.length&&text[i+1]==='\n')i++;
-        current.push(field.trim());
-        if(current.length>1||current[0]!=="")lines.push(current);
-        current=[];field="";
-      } else field+=c;
-    }
+    if(inQ){if(c==='"'){if(i+1<text.length&&text[i+1]==='"'){field+='"';i++;}else inQ=false;}else field+=c;}
+    else{if(c==='"')inQ=true;else if(c===','){cur.push(field.trim());field="";}else if(c==='\n'||c==='\r'){if(c==='\r'&&i+1<text.length&&text[i+1]==='\n')i++;cur.push(field.trim());if(cur.length>1||cur[0]!=="")lines.push(cur);cur=[];field="";}else field+=c;}
   }
-  current.push(field.trim());
-  if(current.length>1||current[0]!=="")lines.push(current);
-
+  cur.push(field.trim());if(cur.length>1||cur[0]!=="")lines.push(cur);
   if(lines.length<2)return[];
-  var h=lines[0];
-  var objs=[];
-  for(var j=1;j<lines.length;j++){
-    var o={};
-    for(var k=0;k<h.length;k++)o[h[k]]=lines[j][k]||"";
-    objs.push(o);
-  }
+  var h=lines[0],objs=[];
+  for(var j=1;j<lines.length;j++){var o={};for(var k=0;k<h.length;k++)o[h[k]]=lines[j][k]||"";objs.push(o);}
   return objs;
 }
 
-/* ── Helpers ── */
-function cCol(cat){var i=allCats.indexOf(cat);return COLORS[i>=0?i%COLORS.length:0];}
-function isE(t){return/ext/i.test(t);}
-function getF(){return allEv.filter(function(e){return aCats.has(e.category)&&((aTypes.has("Internal")&&!isE(e.type))||(aTypes.has("External")&&isE(e.type)));});}
-function d2a(d){var s=new Date(d.getFullYear(),0,1),e=new Date(d.getFullYear()+1,0,1);return((d-s)/(e-s))*360-90;}
+/* ══ Helpers ══ */
+function subColor(mainCat,subCat){
+  var s=SCHEMA[mainCat];
+  if(!s)return"#999";
+  return s.subs[subCat]||s.color;
+}
+function getRing(mainCat){var s=SCHEMA[mainCat];return s?s.ring:0;}
+
+function getViewRange(){
+  var y=viewYear;
+  switch(viewMode){
+    case"h1":return[new Date(y,0,1),new Date(y,6,1)];
+    case"h2":return[new Date(y,6,1),new Date(y+1,0,1)];
+    case"q1":return[new Date(y,0,1),new Date(y,3,1)];
+    case"q2":return[new Date(y,3,1),new Date(y,6,1)];
+    case"q3":return[new Date(y,6,1),new Date(y,9,1)];
+    case"q4":return[new Date(y,9,1),new Date(y+1,0,1)];
+    default:return[new Date(y,0,1),new Date(y+1,0,1)];
+  }
+}
+function getFiltered(){
+  var range=getViewRange();
+  return allEv.filter(function(e){
+    return e.date>=range[0]&&e.date<range[1]&&activeSubs.has(e.mainCat+"::"+e.subCat);
+  });
+}
+
+/* Geometry */
+function dateToAngle(date){
+  var range=getViewRange();
+  var frac=(date-range[0])/(range[1]-range[0]);
+  return frac*360-90;
+}
 function pol(cx,cy,r,dg){var rd=dg*Math.PI/180;return{x:cx+r*Math.cos(rd),y:cy+r*Math.sin(rd)};}
 function arc(cx,cy,r,sa,ea){var s=pol(cx,cy,r,sa),e=pol(cx,cy,r,ea);return"M "+s.x+" "+s.y+" A "+r+" "+r+" 0 "+(ea-sa>180?1:0)+" 1 "+e.x+" "+e.y;}
 
-/* ── Apply ── */
+/* ══ Apply ══ */
 function apply(evts){
-  allEv=evts;allCats=[];var seen={};
-  for(var i=0;i<evts.length;i++){if(!seen[evts[i].category]){allCats.push(evts[i].category);seen[evts[i].category]=true;}}
-  aCats=new Set(allCats);aTypes=new Set(["Internal","External"]);hovI=null;selI=null;
-  document.getElementById("ld").classList.add("out");
-  setTimeout(function(){document.getElementById("ld").classList.add("hd");},300);
-  document.getElementById("hdr").classList.remove("hd");
-  document.getElementById("mv").classList.remove("hd");
+  allEv=evts;
+  // Detect year from data
+  if(evts.length>0)viewYear=evts[0].date.getFullYear();
+  // Activate all subs
+  activeSubs=new Set();
+  for(var mc in SCHEMA){for(var sc in SCHEMA[mc].subs){activeSubs.add(mc+"::"+sc);}}
+  // Also activate any subs in data not in schema
+  for(var i=0;i<evts.length;i++){activeSubs.add(evts[i].mainCat+"::"+evts[i].subCat);}
+  hovI=null;selI=null;
+  document.getElementById("ld").classList.add("hd");
+  document.getElementById("app").classList.remove("hd");
   if(useSample)document.getElementById("ubar").classList.remove("hd");
   render();
 }
 
-/* ── File handling ── */
+/* ══ File handling ══ */
 function handleFile(file){
   var reader=new FileReader();
   if(/\.csv$/i.test(file.name)){
-    reader.onload=function(e){
-      var objs=parseCSV(e.target.result);
-      var evts=parseRows(objs);
-      if(evts.length>0){useSample=false;document.getElementById("ubar").classList.add("hd");apply(evts);}
-    };
+    reader.onload=function(e){var evts=parseRows(parseCSV(e.target.result));if(evts.length>0){useSample=false;document.getElementById("ubar").classList.add("hd");apply(evts);}};
     reader.readAsText(file);
-  } else {
-    reader.onload=function(e){
-      var wb=XLSX.read(new Uint8Array(e.target.result),{type:"array"});
-      var ws=wb.Sheets[wb.SheetNames[0]];
-      var evts=parseRows(XLSX.utils.sheet_to_json(ws));
-      if(evts.length>0){useSample=false;document.getElementById("ubar").classList.add("hd");apply(evts);}
-    };
+  }else{
+    reader.onload=function(e){var wb=XLSX.read(new Uint8Array(e.target.result),{type:"array"});var ws=wb.Sheets[wb.SheetNames[0]];var evts=parseRows(XLSX.utils.sheet_to_json(ws));if(evts.length>0){useSample=false;document.getElementById("ubar").classList.add("hd");apply(evts);}};
     reader.readAsArrayBuffer(file);
   }
 }
 
-/* ── Render ── */
+/* ══ Time nav ══ */
+function updatePeriodLabel(){
+  var lbl="";
+  switch(viewMode){
+    case"year":lbl=viewYear;break;
+    case"h1":lbl="H1 "+viewYear;break;
+    case"h2":lbl="H2 "+viewYear;break;
+    case"q1":lbl="Q1 "+viewYear;break;
+    case"q2":lbl="Q2 "+viewYear;break;
+    case"q3":lbl="Q3 "+viewYear;break;
+    case"q4":lbl="Q4 "+viewYear;break;
+  }
+  document.getElementById("period-label").textContent=lbl;
+}
+function setView(mode){
+  viewMode=mode;
+  document.querySelectorAll(".view-btns button").forEach(function(b){b.classList.remove("active");});
+  document.getElementById("btn-"+mode).classList.add("active");
+  selI=null;hovI=null;
+  render();
+}
+function prevPeriod(){
+  if(viewMode==="year")viewYear--;
+  else if(viewMode==="h1"){viewMode="h2";viewYear--;}
+  else if(viewMode==="h2"){viewMode="h1";}
+  else{
+    var qi=parseInt(viewMode[1]);
+    if(qi===1){viewMode="q4";viewYear--;}
+    else viewMode="q"+(qi-1);
+  }
+  document.querySelectorAll(".view-btns button").forEach(function(b){b.classList.remove("active");});
+  document.getElementById("btn-"+viewMode).classList.add("active");
+  selI=null;hovI=null;render();
+}
+function nextPeriod(){
+  if(viewMode==="year")viewYear++;
+  else if(viewMode==="h1"){viewMode="h2";}
+  else if(viewMode==="h2"){viewMode="h1";viewYear++;}
+  else{
+    var qi=parseInt(viewMode[1]);
+    if(qi===4){viewMode="q1";viewYear++;}
+    else viewMode="q"+(qi+1);
+  }
+  document.querySelectorAll(".view-btns button").forEach(function(b){b.classList.remove("active");});
+  document.getElementById("btn-"+viewMode).classList.add("active");
+  selI=null;hovI=null;render();
+}
+
+/* ══ Render ══ */
 function render(){
-  var f=getF();
-  document.getElementById("sub").textContent=f.length+" of "+allEv.length+" events"+(useSample?" (sample data)":"");
-  rCats();rTypes();rWheel(f);rList(f);rDet(f);
+  updatePeriodLabel();
+  var f=getFiltered();
+  rCats();rWheel(f);rList(f);rDetail(f);
+  document.getElementById("footer-date").textContent=MO_FULL[new Date().getMonth()]+" "+new Date().getFullYear();
 }
 
 function rCats(){
-  var el=document.getElementById("cf");el.innerHTML="";
-  for(var i=0;i<allCats.length;i++){
-    var c=allCats[i],on=aCats.has(c),col=cCol(c);
-    var cnt=allEv.filter(function(e){return e.category===c;}).length;
-    var d=document.createElement("div");d.className="ci";
-    d.innerHTML='<div class="cb" style="border-color:'+col+';background:'+(on?col:"transparent")+'">'+(on?'<span class="ck">✓</span>':'')+'</div><span class="cl'+(on?'':' off')+'">'+c+'</span><span class="cc">'+cnt+'</span>';
-    d.onclick=(function(cat){return function(){aCats.has(cat)?aCats.delete(cat):aCats.add(cat);selI=null;render();};})(c);
-    el.appendChild(d);
-  }
-}
-function rTypes(){
-  var el=document.getElementById("tf");el.innerHTML="";
-  ["Internal","External"].forEach(function(t){
-    var on=aTypes.has(t);
-    var d=document.createElement("div");d.className="ci";
-    d.innerHTML='<div class="cb" style="border-color:#64748b;background:'+(on?"#64748b":"transparent")+'">'+(on?'<span class="ck">✓</span>':'')+'</div><span class="cl'+(on?'':' off')+'">'+(t==="Internal"?"● Internal":"▲ External")+'</span>';
-    d.onclick=(function(tp){return function(){aTypes.has(tp)?aTypes.delete(tp):aTypes.add(tp);selI=null;render();};})(t);
-    el.appendChild(d);
+  var el=document.getElementById("cat-filters");el.innerHTML="";
+  MAIN_CATS.forEach(function(mc){
+    var s=SCHEMA[mc];
+    var div=document.createElement("div");div.className="main-cat";
+    // Header
+    var hdr=document.createElement("div");hdr.className="main-cat-header";
+    hdr.innerHTML='<div class="indicator" style="background:'+s.color+'"></div>'+mc;
+    div.appendChild(hdr);
+    // Subs
+    var subDiv=document.createElement("div");subDiv.className="sub-cat-list";
+    Object.keys(s.subs).forEach(function(sc){
+      var key=mc+"::"+sc;
+      var on=activeSubs.has(key);
+      var col=s.subs[sc];
+      var cnt=allEv.filter(function(e){return e.mainCat===mc&&e.subCat===sc;}).length;
+      var item=document.createElement("div");item.className="sub-item";
+      item.innerHTML='<div class="sub-box" style="border-color:'+col+';background:'+(on?col:"transparent")+'">'+(on?'<span class="ck">✓</span>':'')+'</div><span class="sub-label'+(on?'':' off')+'">'+sc+'</span><span class="sub-count">'+cnt+'</span>';
+      item.onclick=(function(k){return function(){activeSubs.has(k)?activeSubs.delete(k):activeSubs.add(k);selI=null;render();};})(key);
+      subDiv.appendChild(item);
+    });
+    div.appendChild(subDiv);
+    el.appendChild(div);
   });
 }
-function rDet(f){
-  var el=document.getElementById("evd");
-  if(selI===null||!f[selI]){el.innerHTML="";return;}
-  var ev=f[selI],col=cCol(ev.category);
-  var ds=ev.date.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
-  el.innerHTML='<div class="ed"><div class="tg" style="background:'+col+'">'+ev.category+'</div><h4>'+ev.name+'</h4><div class="mt">'+ds+' · '+ev.type+'</div>'+(ev.description?'<div class="ds">'+ev.description+'</div>':'')+'</div>';
+
+function rDetail(f){
+  var el=document.getElementById("ev-card");
+  if(selI===null||!f[selI]){el.className="event-card empty";el.innerHTML="Click an event to view details";return;}
+  var ev=f[selI],col=subColor(ev.mainCat,ev.subCat);
+  var ds=ev.date.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  var h='<div class="ev-tags"><div class="ev-tag" style="background:'+col+'">'+ev.subCat+'</div><div class="ev-tag outline">'+ev.mainCat+'</div></div>';
+  h+='<div class="ev-title">'+ev.name+'</div>';
+  h+='<div class="ev-date">'+ds+'</div>';
+  if(ev.description){h+='<div class="ev-field"><div class="ev-field-label">Description</div><div class="ev-field-value">'+ev.description+'</div></div>';}
+  if(ev.owner){h+='<div class="ev-field"><div class="ev-field-label">Owner</div><div class="ev-field-value">'+ev.owner+'</div></div>';}
+  if(ev.link){h+='<div class="ev-field"><div class="ev-field-label">Link</div><div class="ev-field-value"><a href="'+ev.link+'" target="_blank">'+ev.link+'</a></div></div>';}
+  el.className="event-card";el.innerHTML=h;
 }
+
 function rList(f){
-  document.getElementById("elt").textContent="Events ("+f.length+")";
-  var el=document.getElementById("el");el.innerHTML="";
+  document.getElementById("ev-list-title").textContent="Events ("+f.length+")";
+  var el=document.getElementById("ev-list");el.innerHTML="";
   for(var i=0;i<f.length;i++){
-    var ev=f[i],ext=isE(ev.type),col=cCol(ev.category);
-    var d=document.createElement("div");d.className="ei"+(selI===i?" sel":"");
-    d.innerHTML='<div class="rw"><div class="dt '+(ext?"ext":"int")+'" style="background:'+col+'"></div><span class="nm">'+ev.name+'</span></div><div class="inf">'+ev.date.toLocaleDateString("en-GB",{day:"numeric",month:"short"})+' · '+ev.category+'</div>';
-    d.onmouseenter=(function(idx){return function(){hovI=idx;rWheel(getF());};})(i);
-    d.onmouseleave=function(){hovI=null;rWheel(getF());};
+    var ev=f[i],col=subColor(ev.mainCat,ev.subCat);
+    var d=document.createElement("div");d.className="ev-list-item"+(selI===i?" sel":"");
+    d.innerHTML='<div class="dot" style="background:'+col+'"></div><div class="info"><div class="nm">'+ev.name+'</div><div class="meta">'+ev.date.toLocaleDateString("en-GB",{day:"numeric",month:"short"})+' · '+ev.subCat+'</div></div>';
+    d.onmouseenter=(function(idx){return function(){hovI=idx;rWheel(getFiltered());};})(i);
+    d.onmouseleave=function(){hovI=null;rWheel(getFiltered());};
     d.onclick=(function(idx){return function(){selI=selI===idx?null:idx;render();};})(i);
     el.appendChild(d);
   }
@@ -347,85 +706,233 @@ function rList(f){
 
 function rWheel(f){
   var svg=document.getElementById("wsvg");
-  var S=700,cx=350,cy=350,oR=310,iR=100;
-  var rings=[170,205,240];
-  var items=f.map(function(ev){return{date:ev.date,name:ev.name,category:ev.category,type:ev.type,description:ev.description,angle:d2a(ev.date)};}).sort(function(a,b){return a.angle-b.angle;});
-  var placed=[];
-  var pos=items.map(function(ev){
-    var best=0;
-    for(var ri=0;ri<rings.length;ri++){var ok=true;for(var j=0;j<placed.length;j++){if(placed[j].ring===ri&&Math.abs(placed[j].angle-ev.angle)<8){ok=false;break;}}if(ok){best=ri;break;}best=ri;}
-    var r={date:ev.date,name:ev.name,category:ev.category,type:ev.type,description:ev.description,angle:ev.angle,radius:rings[best],ring:best};
-    placed.push(r);return r;
-  });
+  var S=700,cx=350,cy=350;
 
-  var year=f.length>0?f[0].date.getFullYear():new Date().getFullYear();
-  var h='<defs><filter id="gl"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><filter id="sh"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.15"/></filter><radialGradient id="cg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f8fafc"/><stop offset="100%" stop-color="#e2e8f0"/></radialGradient></defs>';
-  h+='<circle cx="'+cx+'" cy="'+cy+'" r="'+(oR+8)+'" fill="#f1f5f9"/><circle cx="'+cx+'" cy="'+cy+'" r="'+oR+'" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>';
+  /* Three rings — inner to outer */
+  var ringDefs=[
+    {r1:130,r2:205,cat:"Internal",fill:"var(--int-ring)"},
+    {r1:210,r2:265,cat:"External",fill:"var(--ext-ring)"},
+    {r1:270,r2:320,cat:"Marketing",fill:"var(--mkt-ring)"}
+  ];
+  var centerR=125;
 
-  for(var i=0;i<12;i++){
-    var sa=(i/12)*360-90,ea=((i+1)/12)*360-90,ma=(sa+ea)/2;
-    var lp=pol(cx,cy,280,ma),s1=pol(cx,cy,iR,sa),e1=pol(cx,cy,oR,sa);
-    h+='<line x1="'+s1.x+'" y1="'+s1.y+'" x2="'+e1.x+'" y2="'+e1.y+'" stroke="#cbd5e1" stroke-width="0.5"/>';
-    if(i%2===0){var ie=pol(cx,cy,iR,ea);h+='<path d="'+arc(cx,cy,oR,sa,ea)+' L '+ie.x+' '+ie.y+' '+arc(cx,cy,iR,ea,sa).replace("M","L")+' Z" fill="#f8fafc" opacity="0.6"/>';}
-    h+='<text x="'+lp.x+'" y="'+lp.y+'" text-anchor="middle" dominant-baseline="middle" style="font-size:11px;font-family:DM Sans,sans-serif;font-weight:600;fill:#64748b;letter-spacing:0.05em;text-transform:uppercase">'+MO[i]+'</text>';
+  /* Determine month labels based on view */
+  var range=getViewRange();
+  var months=[];
+  var d=new Date(range[0]);
+  while(d<range[1]){months.push(new Date(d));d=new Date(d.getFullYear(),d.getMonth()+1,1);}
+  var numSeg=months.length;
+
+  var h='<defs>';
+  h+='<filter id="gl"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  h+='<filter id="sh"><feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-opacity="0.12"/></filter>';
+  h+='<radialGradient id="cg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FAFAF8"/><stop offset="100%" stop-color="#EEEDEA"/></radialGradient>';
+  h+='</defs>';
+
+  /* Background */
+  h+='<circle cx="'+cx+'" cy="'+cy+'" r="328" fill="#EEEDEA"/>';
+
+  /* Ring backgrounds */
+  for(var ri=0;ri<ringDefs.length;ri++){
+    var rd=ringDefs[ri];
+    h+='<circle cx="'+cx+'" cy="'+cy+'" r="'+rd.r2+'" fill="'+rd.fill+'" stroke="var(--border)" stroke-width="0.5"/>';
+    h+='<circle cx="'+cx+'" cy="'+cy+'" r="'+rd.r1+'" fill="var(--bg)" stroke="var(--border)" stroke-width="0.5"/>';
+    /* Ring label */
+    var labelR=(rd.r1+rd.r2)/2;
+    var labelAngle=-90-3; /* just above 12 o'clock */
+    var lp=pol(cx,cy,labelR,labelAngle);
   }
 
-  h+='<circle cx="'+cx+'" cy="'+cy+'" r="'+iR+'" fill="url(#cg)" stroke="#e2e8f0" stroke-width="1"/>';
-  h+='<text x="'+cx+'" y="'+(cy-14)+'" text-anchor="middle" dominant-baseline="middle" style="font-size:22px;font-family:DM Sans,sans-serif;font-weight:700;fill:#1e293b">'+year+'</text>';
-  h+='<text x="'+cx+'" y="'+(cy+10)+'" text-anchor="middle" dominant-baseline="middle" style="font-size:11px;font-family:DM Sans,sans-serif;fill:#94a3b8;letter-spacing:0.08em;text-transform:uppercase">Yearly Wheel</text>';
-  h+='<text x="'+cx+'" y="'+(cy+28)+'" text-anchor="middle" dominant-baseline="middle" style="font-size:11px;font-family:DM Sans,sans-serif;fill:#94a3b8">'+f.length+' events</text>';
+  /* Rebuild ring backgrounds as proper annular sectors */
+  /* First draw filled annular rings */
+  for(var ri=0;ri<ringDefs.length;ri++){
+    var rd=ringDefs[ri];
+    /* Draw annular ring */
+    h+='<path d="M '+(cx)+' '+(cy-rd.r2)+' A '+rd.r2+' '+rd.r2+' 0 1 1 '+(cx-0.01)+' '+(cy-rd.r2)+' Z M '+(cx)+' '+(cy-rd.r1)+' A '+rd.r1+' '+rd.r1+' 0 1 0 '+(cx-0.01)+' '+(cy-rd.r1)+' Z" fill="'+rd.fill+'" fill-rule="evenodd"/>';
+  }
 
-  for(var i=0;i<pos.length;i++){
-    var ev=pos[i],p=pol(cx,cy,ev.radius,ev.angle),ls=pol(cx,cy,iR+4,ev.angle);
-    var col=cCol(ev.category),act=hovI===i||selI===i,ds=act?7:5,ext=isE(ev.type);
+  /* Month separators + labels */
+  for(var mi=0;mi<numSeg;mi++){
+    var segStart=(mi/numSeg)*360-90;
+    var segEnd=((mi+1)/numSeg)*360-90;
+    var midA=(segStart+segEnd)/2;
+
+    /* Separator line across all rings */
+    var lineStart=pol(cx,cy,centerR,segStart);
+    var lineEnd=pol(cx,cy,ringDefs[2].r2+2,segStart);
+    h+='<line x1="'+lineStart.x+'" y1="'+lineStart.y+'" x2="'+lineEnd.x+'" y2="'+lineEnd.y+'" stroke="var(--border)" stroke-width="0.8"/>';
+
+    /* Month label outside */
+    var lp=pol(cx,cy,ringDefs[2].r2+16,midA);
+    var moIdx=months[mi].getMonth();
+    h+='<text x="'+lp.x+'" y="'+lp.y+'" text-anchor="middle" dominant-baseline="middle" style="font-size:10px;font-family:Outfit,sans-serif;font-weight:700;fill:var(--text3);letter-spacing:0.06em;text-transform:uppercase">'+MO[moIdx]+'</text>';
+  }
+
+  /* Center circle */
+  h+='<circle cx="'+cx+'" cy="'+cy+'" r="'+centerR+'" fill="url(#cg)" stroke="var(--border)" stroke-width="0.8"/>';
+
+  /* Center text */
+  var periodTxt="";
+  switch(viewMode){
+    case"year":periodTxt=viewYear;break;
+    case"h1":periodTxt="H1 "+viewYear;break;
+    case"h2":periodTxt="H2 "+viewYear;break;
+    default:periodTxt=viewMode.toUpperCase()+" "+viewYear;
+  }
+  h+='<text x="'+cx+'" y="'+(cy-18)+'" text-anchor="middle" dominant-baseline="middle" style="font-size:26px;font-family:Outfit,sans-serif;font-weight:800;fill:var(--text);letter-spacing:-0.03em">'+periodTxt+'</text>';
+  h+='<text x="'+cx+'" y="'+(cy+8)+'" text-anchor="middle" dominant-baseline="middle" style="font-size:10px;font-family:Outfit,sans-serif;font-weight:600;fill:var(--text3);letter-spacing:0.1em;text-transform:uppercase">Yearly Wheel</text>';
+  h+='<text x="'+cx+'" y="'+(cy+24)+'" text-anchor="middle" dominant-baseline="middle" style="font-size:11px;font-family:Outfit,sans-serif;fill:var(--text3)">'+f.length+' events</text>';
+
+  /* Ring labels in center area */
+  var ringLabY = cy + 48;
+  for(var ri=0;ri<ringDefs.length;ri++){
+    var rd=ringDefs[ri];
+    var col=SCHEMA[rd.cat].color;
+    var lx = cx - 60 + ri*60;
+    h+='<circle cx="'+lx+'" cy="'+ringLabY+'" r="4" fill="'+col+'"/>';
+    h+='<text x="'+(lx+8)+'" y="'+ringLabY+'" text-anchor="start" dominant-baseline="middle" style="font-size:9px;font-family:Outfit,sans-serif;font-weight:600;fill:var(--text3)">'+rd.cat.substring(0,3).toUpperCase()+'</text>';
+  }
+
+  /* Events — place in correct ring */
+  var eventsByRing=[[],[],[]];
+  for(var i=0;i<f.length;i++){
+    var ev=f[i];
+    var ring=getRing(ev.mainCat);
+    eventsByRing[ring].push({idx:i,ev:ev,angle:dateToAngle(ev.date)});
+  }
+
+  /* Position with collision avoidance per ring */
+  var allPos=[];
+  for(var ri=0;ri<3;ri++){
+    var rd=ringDefs[ri];
+    var evts=eventsByRing[ri];
+    evts.sort(function(a,b){return a.angle-b.angle;});
+    var subRings=[];
+    var numSub=3;
+    var step=(rd.r2-rd.r1-8)/(numSub);
+    for(var si=0;si<numSub;si++){subRings.push(rd.r1+6+step*si+step/2);}
+
+    var placed=[];
+    for(var j=0;j<evts.length;j++){
+      var ev=evts[j];
+      var best=0;
+      for(var si=0;si<subRings.length;si++){
+        var ok=true;
+        for(var p=0;p<placed.length;p++){
+          if(placed[p].sr===si&&Math.abs(placed[p].angle-ev.angle)<(360/numSeg*0.35)){ok=false;break;}
+        }
+        if(ok){best=si;break;}
+        best=si;
+      }
+      var pos={idx:ev.idx,ev:ev.ev,angle:ev.angle,radius:subRings[best],sr:best};
+      placed.push(pos);
+      allPos.push(pos);
+    }
+  }
+
+  /* Draw events */
+  for(var i=0;i<allPos.length;i++){
+    var item=allPos[i];
+    var p=pol(cx,cy,item.radius,item.angle);
+    var col=subColor(item.ev.mainCat,item.ev.subCat);
+    var act=hovI===item.idx||selI===item.idx;
+    var ds=act?7:5;
     var flt=act?"url(#gl)":"url(#sh)";
-    h+='<g data-i="'+i+'" class="ev" style="cursor:pointer">';
-    h+='<line x1="'+ls.x+'" y1="'+ls.y+'" x2="'+p.x+'" y2="'+p.y+'" stroke="'+col+'" stroke-width="'+(act?1.5:0.5)+'" opacity="'+(act?0.6:0.2)+'"/>';
+
+    h+='<g data-i="'+item.idx+'" class="ev" style="cursor:pointer">';
     h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="14" fill="transparent"/>';
-    if(ext){h+='<polygon points="'+p.x+','+(p.y-ds)+' '+(p.x+ds*0.87)+','+(p.y+ds*0.5)+' '+(p.x-ds*0.87)+','+(p.y+ds*0.5)+'" fill="'+col+'" stroke="#fff" stroke-width="1.5" filter="'+flt+'"/>';}
-    else{h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="'+ds+'" fill="'+col+'" stroke="#fff" stroke-width="1.5" filter="'+flt+'"/>';}
-    if(act){var tw=ev.name.length*6.5+16;h+='<rect x="'+(p.x+10)+'" y="'+(p.y-12)+'" width="'+tw+'" height="22" rx="4" fill="#1e293b" opacity="0.92"/><text x="'+(p.x+18)+'" y="'+(p.y+2)+'" style="font-size:11px;font-family:DM Sans,sans-serif;fill:#fff;font-weight:500">'+ev.name+'</text>';}
+    h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="'+ds+'" fill="'+col+'" stroke="#fff" stroke-width="1.5" filter="'+flt+'"/>';
+    if(act){
+      var tw=item.ev.name.length*5.8+20;
+      var tx=p.x+12,ty=p.y;
+      /* Check if label would go offscreen */
+      if(tx+tw>S-10){tx=p.x-tw-8;}
+      h+='<rect x="'+tx+'" y="'+(ty-11)+'" width="'+tw+'" height="22" rx="4" fill="var(--text)" opacity="0.92"/>';
+      h+='<text x="'+(tx+10)+'" y="'+(ty+1)+'" style="font-size:10px;font-family:Outfit,sans-serif;fill:#fff;font-weight:600">'+item.ev.name+'</text>';
+    }
     h+='</g>';
   }
+
   svg.innerHTML=h;
+
+  /* Attach listeners */
   var dots=svg.querySelectorAll(".ev");
-  for(var j=0;j<dots.length;j++){(function(g){var idx=parseInt(g.getAttribute("data-i"));g.addEventListener("mouseenter",function(){hovI=idx;rWheel(getF());});g.addEventListener("mouseleave",function(){hovI=null;rWheel(getF());});g.addEventListener("click",function(){selI=selI===idx?null:idx;render();});})(dots[j]);}
+  for(var j=0;j<dots.length;j++){
+    (function(g){
+      var idx=parseInt(g.getAttribute("data-i"));
+      g.addEventListener("mouseenter",function(){hovI=idx;rWheel(getFiltered());});
+      g.addEventListener("mouseleave",function(){hovI=null;rWheel(getFiltered());});
+      g.addEventListener("click",function(){selI=selI===idx?null:idx;render();});
+    })(dots[j]);
+  }
 }
 
-function resetF(){aCats=new Set(allCats);aTypes=new Set(["Internal","External"]);selI=null;render();}
-function selA(){aCats=new Set(allCats);selI=null;render();}
-function selN(){aCats=new Set();selI=null;render();}
+function resetF(){
+  activeSubs=new Set();
+  for(var mc in SCHEMA){for(var sc in SCHEMA[mc].subs){activeSubs.add(mc+"::"+sc);}}
+  selI=null;render();
+}
 
-/* ── Drag & drop ── */
+/* ══ Drag & Drop ══ */
 document.addEventListener("dragover",function(e){e.preventDefault();document.getElementById("drop-ov").style.display="block";});
 document.addEventListener("dragleave",function(e){if(!e.relatedTarget||e.relatedTarget===document.documentElement)document.getElementById("drop-ov").style.display="none";});
 document.addEventListener("drop",function(e){e.preventDefault();document.getElementById("drop-ov").style.display="none";if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
 document.getElementById("fi").addEventListener("change",function(e){if(e.target.files[0])handleFile(e.target.files[0]);});
 
-/* ── Boot: try loading events.csv, fall back to sample ── */
-document.getElementById("ld-s").textContent="Looking for "+CSV_FILE+"…";
+/* ══ Sample data ══ */
+var SAMPLE=[
+  {date:new Date(2026,0,12),name:"New Year Kickoff",mainCat:"Internal",subCat:"Social Events",description:"Annual kickoff celebration",owner:"Marie Jensen",link:""},
+  {date:new Date(2026,0,22),name:"Data Guild Workshop",mainCat:"Internal",subCat:"Associate Guild",description:"Monthly data engineering knowledge sharing",owner:"Lars Thomsen",link:""},
+  {date:new Date(2026,1,5),name:"AI Strategy Session",mainCat:"Marketing",subCat:"AI",description:"Quarterly AI positioning review",owner:"Sofie Holm",link:""},
+  {date:new Date(2026,1,13),name:"Winter Team Day",mainCat:"Internal",subCat:"Teambuilding Days",description:"Cross-team winter activities",owner:"Peter Eriksen",link:""},
+  {date:new Date(2026,1,25),name:"HIMSS Europe",mainCat:"External",subCat:"Conferences",description:"Healthcare IT conference",owner:"Mads Larsen",link:"https://himss.org"},
+  {date:new Date(2026,2,5),name:"Health 3.0 Meetup",mainCat:"External",subCat:"Health 3.0",description:"Monthly health tech meetup",owner:"Anna Bak",link:""},
+  {date:new Date(2026,2,12),name:"AE Workshop",mainCat:"Marketing",subCat:"AE",description:"Analytics engineering brand positioning",owner:"Kasper Lund",link:""},
+  {date:new Date(2026,2,20),name:"Spring Social",mainCat:"Internal",subCat:"Social Events",description:"Friday bar and spring celebration",owner:"Marie Jensen",link:""},
+  {date:new Date(2026,3,2),name:"AI Webinar Launch",mainCat:"External",subCat:"Webinars",description:"Public webinar on AI in pharma",owner:"Sofie Holm",link:""},
+  {date:new Date(2026,3,15),name:"Strategy Offsite",mainCat:"Marketing",subCat:"Strategy",description:"Annual strategy and growth planning",owner:"Henrik Madsen",link:""},
+  {date:new Date(2026,3,23),name:"Health 3.0 Summit",mainCat:"External",subCat:"Health 3.0",description:"Annual flagship event",owner:"Anna Bak",link:"https://health3.dk"},
+  {date:new Date(2026,4,7),name:"Summer Hackathon",mainCat:"Internal",subCat:"Teambuilding Days",description:"48-hour innovation hackathon",owner:"Lars Thomsen",link:""},
+  {date:new Date(2026,4,14),name:"Data Conference CPH",mainCat:"External",subCat:"Conferences",description:"Copenhagen data conference",owner:"Mads Larsen",link:""},
+  {date:new Date(2026,4,21),name:"AI Content Sprint",mainCat:"Marketing",subCat:"AI",description:"AI thought leadership content",owner:"Sofie Holm",link:""},
+  {date:new Date(2026,5,4),name:"MedTech Webinar",mainCat:"External",subCat:"Webinars",description:"Data platforms for medtech",owner:"Kasper Lund",link:""},
+  {date:new Date(2026,5,19),name:"Midsummer Party",mainCat:"Internal",subCat:"Social Events",description:"Annual midsummer celebration",owner:"Marie Jensen",link:""},
+  {date:new Date(2026,5,25),name:"Strategy Review Q2",mainCat:"Marketing",subCat:"Strategy",description:"Q2 review and H2 planning",owner:"Henrik Madsen",link:""},
+  {date:new Date(2026,6,3),name:"Summer Party",mainCat:"Internal",subCat:"Social Events",description:"Big summer party for all",owner:"Marie Jensen",link:""},
+  {date:new Date(2026,6,9),name:"Health 3.0 Workshop",mainCat:"External",subCat:"Health 3.0",description:"Interoperability standards",owner:"Anna Bak",link:""},
+  {date:new Date(2026,6,16),name:"Team Adventure",mainCat:"Internal",subCat:"Teambuilding Days",description:"Outdoor adventure day",owner:"Peter Eriksen",link:""},
+  {date:new Date(2026,7,6),name:"AI Webinar Advanced",mainCat:"External",subCat:"Webinars",description:"Advanced AI patterns",owner:"Sofie Holm",link:""},
+  {date:new Date(2026,7,13),name:"Data Guild Offsite",mainCat:"Internal",subCat:"Associate Guild",description:"Guild offsite with workshops",owner:"Lars Thomsen",link:""},
+  {date:new Date(2026,7,20),name:"AI Thought Leadership",mainCat:"Marketing",subCat:"AI",description:"Articles and LinkedIn campaign",owner:"Sofie Holm",link:""},
+  {date:new Date(2026,8,3),name:"Nordic Health Summit",mainCat:"External",subCat:"Conferences",description:"Major Nordic healthcare summit",owner:"Mads Larsen",link:""},
+  {date:new Date(2026,8,10),name:"Strategy Day",mainCat:"Marketing",subCat:"Strategy",description:"Full-day strategy session",owner:"Henrik Madsen",link:""},
+  {date:new Date(2026,8,18),name:"Autumn Social",mainCat:"Internal",subCat:"Social Events",description:"Autumn social and quiz night",owner:"Marie Jensen",link:""},
+  {date:new Date(2026,8,24),name:"AE Webinar",mainCat:"External",subCat:"Webinars",description:"Analytics engineering best practices",owner:"Kasper Lund",link:""},
+  {date:new Date(2026,9,1),name:"Cloud Certification",mainCat:"Internal",subCat:"Associate Guild",description:"Certification prep day",owner:"Thomas Nielsen",link:""},
+  {date:new Date(2026,9,8),name:"Health 3.0 Quarterly",mainCat:"External",subCat:"Health 3.0",description:"Quarterly community gathering",owner:"Anna Bak",link:""},
+  {date:new Date(2026,9,15),name:"AE Brand Review",mainCat:"Marketing",subCat:"AE",description:"Refresh AE brand materials",owner:"Henrik Madsen",link:""},
+  {date:new Date(2026,9,29),name:"Halloween Team Event",mainCat:"Internal",subCat:"Teambuilding Days",description:"Halloween themed team building",owner:"Peter Eriksen",link:""},
+  {date:new Date(2026,10,5),name:"Dreamforce Watch",mainCat:"External",subCat:"Conferences",description:"Keynote watch party",owner:"Mads Larsen",link:""},
+  {date:new Date(2026,10,12),name:"AI Strategy Update",mainCat:"Marketing",subCat:"AI",description:"AI go-to-market for 2027",owner:"Sofie Holm",link:""},
+  {date:new Date(2026,10,20),name:"November Social",mainCat:"Internal",subCat:"Social Events",description:"Pre-holiday gathering",owner:"Marie Jensen",link:""},
+  {date:new Date(2026,10,26),name:"Strategy 2027",mainCat:"Marketing",subCat:"Strategy",description:"Annual planning for next year",owner:"Henrik Madsen",link:""},
+  {date:new Date(2026,11,3),name:"Year in Review Webinar",mainCat:"External",subCat:"Webinars",description:"Year in review and 2027 outlook",owner:"Sofie Holm",link:""},
+  {date:new Date(2026,11,11),name:"Christmas Party",mainCat:"Internal",subCat:"Social Events",description:"Annual christmas party",owner:"Marie Jensen",link:""},
+  {date:new Date(2026,11,17),name:"Data Guild Awards",mainCat:"Internal",subCat:"Associate Guild",description:"Annual guild awards",owner:"Lars Thomsen",link:""}
+];
 
+/* ══ Boot ══ */
 var xhr=new XMLHttpRequest();
 xhr.open("GET",CSV_FILE,true);
 xhr.onreadystatechange=function(){
   if(xhr.readyState!==4)return;
   if(xhr.status>=200&&xhr.status<300&&xhr.responseText&&xhr.responseText.length>10){
-    document.getElementById("ld-s").textContent="Parsing events…";
-    try{
-      var objs=parseCSV(xhr.responseText);
-      var evts=parseRows(objs);
-      if(evts.length>0){useSample=false;apply(evts);return;}
-    }catch(e){}
+    try{var evts=parseRows(parseCSV(xhr.responseText));if(evts.length>0){useSample=false;apply(evts);return;}}catch(e){}
   }
-  // Fallback to sample
-  document.getElementById("ld-s").textContent="No CSV found, loading sample data…";
   useSample=true;
-  setTimeout(function(){apply(SAMPLE);},400);
+  setTimeout(function(){apply(SAMPLE);},300);
 };
-xhr.onerror=function(){
-  useSample=true;
-  setTimeout(function(){apply(SAMPLE);},400);
-};
+xhr.onerror=function(){useSample=true;setTimeout(function(){apply(SAMPLE);},300);};
 xhr.send();
 </script>
 </body>

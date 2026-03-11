@@ -1,3 +1,42 @@
-Title,Date,Category,type,Description
-Hackathon,3/25/2026,Associates,External,Cool stuff
-Pharma evening,3/23/2026,Meetups,Internal,Learn about pharma with hugo and Sonne
+Title,Date,MainCategory,SubCategory,Description,Owner,Link
+New Year Kickoff,1/12/2026,Internal,Social Events,Annual kickoff celebration for all employees,Marie Jensen,https://intellishore.dk
+Data Guild Workshop,1/22/2026,Internal,Associate Guild,Monthly data engineering knowledge sharing,Lars Thomsen,
+AI Strategy Session,2/5/2026,Marketing,AI,Quarterly AI positioning and go-to-market review,Sofie Holm,
+Winter Team Day,2/13/2026,Internal,Teambuilding Days,Cross-team winter activities and dinner,Peter Eriksen,
+HIMSS Europe,2/25/2026,External,Conferences,Healthcare IT conference in Helsinki,Mads Larsen,https://himss.org
+Health 3.0 Meetup,3/5/2026,External,Health 3.0,Monthly health tech community meetup,Anna Bak,
+AE Positioning Workshop,3/12/2026,Marketing,AE,Analytics engineering brand positioning,Kasper Lund,
+Spring Social,3/20/2026,Internal,Social Events,Friday bar and spring celebration,Marie Jensen,
+Cloud Guild Deep Dive,3/26/2026,Internal,Associate Guild,Deep dive into cloud architecture patterns,Thomas Nielsen,
+AI Webinar Series Launch,4/2/2026,External,Webinars,Public webinar on AI in pharma,Sofie Holm,https://intellishore.dk/webinars
+Strategy Offsite,4/15/2026,Marketing,Strategy,Annual strategy and growth planning offsite,Henrik Madsen,
+Health 3.0 Summit,4/23/2026,External,Health 3.0,Annual Health 3.0 flagship event,Anna Bak,https://health3.dk
+Summer Hackathon,5/7/2026,Internal,Teambuilding Days,48-hour innovation hackathon with prizes,Lars Thomsen,
+Data Conference CPH,5/14/2026,External,Conferences,Copenhagen data and analytics conference,Mads Larsen,https://dataconf.dk
+AI Content Sprint,5/21/2026,Marketing,AI,Create AI thought leadership content batch,Sofie Holm,
+Associate Guild Summit,5/28/2026,Internal,Associate Guild,Annual guild summit with all tracks,Thomas Nielsen,
+MedTech Webinar,6/4/2026,External,Webinars,Webinar on data platforms for medtech,Kasper Lund,
+AE Campaign Launch,6/11/2026,Marketing,AE,Launch analytics engineering campaign,Henrik Madsen,
+Midsummer Party,6/19/2026,Internal,Social Events,Annual midsummer celebration at the office,Marie Jensen,
+Strategy Review Q2,6/25/2026,Marketing,Strategy,Q2 strategy review and H2 planning,Henrik Madsen,
+Summer Party,7/3/2026,Internal,Social Events,Big summer party for all employees and families,Marie Jensen,
+Health 3.0 Workshop,7/9/2026,External,Health 3.0,Workshop on interoperability standards,Anna Bak,
+Team Building Adventure,7/16/2026,Internal,Teambuilding Days,Outdoor adventure day for the whole company,Peter Eriksen,
+AI Webinar Advanced,8/6/2026,External,Webinars,Advanced AI implementation patterns webinar,Sofie Holm,
+Data Guild Offsite,8/13/2026,Internal,Associate Guild,Guild offsite with workshops and talks,Lars Thomsen,
+AI Thought Leadership,8/20/2026,Marketing,AI,AI positioning articles and LinkedIn campaign,Sofie Holm,
+Nordic Health Summit,9/3/2026,External,Conferences,Major Nordic healthcare technology summit,Mads Larsen,https://nordichealthsummit.dk
+Strategy Day,9/10/2026,Marketing,Strategy,Full-day company strategy session,Henrik Madsen,
+Autumn Social,9/18/2026,Internal,Social Events,Autumn social event and quiz night,Marie Jensen,
+AE Webinar,9/24/2026,External,Webinars,Public webinar on analytics engineering best practices,Kasper Lund,
+Cloud Guild Certification,10/1/2026,Internal,Associate Guild,Group certification prep and exam day,Thomas Nielsen,
+Health 3.0 Quarterly,10/8/2026,External,Health 3.0,Quarterly health tech community gathering,Anna Bak,
+AE Brand Review,10/15/2026,Marketing,AE,Review and refresh AE brand materials,Henrik Madsen,
+Halloween Team Event,10/29/2026,Internal,Teambuilding Days,Halloween themed team building,Peter Eriksen,
+Dreamforce Watch Party,11/5/2026,External,Conferences,Dreamforce keynote watch party and discussion,Mads Larsen,
+AI Strategy Update,11/12/2026,Marketing,AI,Update AI go-to-market for 2027,Sofie Holm,
+November Social,11/20/2026,Internal,Social Events,Pre-holiday social gathering,Marie Jensen,
+Strategy 2027 Planning,11/26/2026,Marketing,Strategy,Annual strategy planning for next year,Henrik Madsen,
+Christmas Party,12/11/2026,Internal,Social Events,Annual christmas party and dinner,Marie Jensen,
+Year in Review Webinar,12/3/2026,External,Webinars,Public year in review and 2027 outlook webinar,Sofie Holm,
+Data Guild Awards,12/17/2026,Internal,Associate Guild,Annual guild awards and knowledge celebration,Lars Thomsen,
