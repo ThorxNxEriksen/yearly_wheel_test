@@ -7,417 +7,173 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #F5F4F1;
-    --surface: #FFFFFF;
-    --border: #E5E3DE;
-    --text: #1A1A1A;
-    --text2: #6B6560;
-    --text3: #A09A93;
-    --accent: #1A1A1A;
-
-    /* Internal — Blues */
-    --int-teambuilding: #14506A;
-    --int-guild: #2874A6;
-    --int-social: #5DADE2;
-    --int-ring: rgba(20,80,106,0.06);
-
-    /* External — Reds */
-    --ext-webinars: #922B21;
-    --ext-conferences: #C0392B;
-    --ext-health: #E74C3C;
-    --ext-ring: rgba(192,57,43,0.06);
-
-    /* Marketing — Greens */
-    --mkt-strategy: #0E4D3A;
-    --mkt-ai: #1E8449;
-    --mkt-ae: #27AE60;
-    --mkt-ring: rgba(30,132,73,0.06);
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --bg:#F5F4F1;--surface:#FFFFFF;--border:#E5E3DE;
+    --text:#1A1A1A;--text2:#6B6560;--text3:#A09A93;
   }
-
-  body {
-    font-family: 'Outfit', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+  body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
   /* Header */
-  .header {
-    padding: 18px 32px;
-    background: var(--text);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .header-left { display: flex; align-items: center; gap: 16px; }
-  .logo {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-  }
-  .logo-sub {
-    font-size: 13px;
-    font-weight: 400;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 0.04em;
-  }
+  .header{padding:14px 28px;background:var(--text);color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+  .header-left{display:flex;align-items:center;gap:16px;}
+  .logo{font-size:20px;font-weight:700;letter-spacing:-0.03em;}
+  .logo-sub{font-size:13px;font-weight:400;color:rgba(255,255,255,0.45);letter-spacing:0.04em;}
 
-  /* Time nav */
-  .time-nav {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 8px;
-    padding: 4px;
+  /* Nav controls */
+  .nav-group{display:flex;align-items:center;gap:16px;}
+  .nav-ctrl{display:flex;align-items:center;gap:6px;}
+  .nav-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.4);margin-right:4px;}
+  .nav-ctrl select{
+    padding:6px 28px 6px 12px;font-size:13px;font-weight:600;font-family:inherit;
+    background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.15);
+    border-radius:6px;cursor:pointer;appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.6)'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 10px center;
   }
-  .time-nav button {
-    width: 32px; height: 32px;
-    border: none; background: transparent;
-    color: rgba(255,255,255,0.7);
-    font-size: 16px; cursor: pointer;
-    border-radius: 6px;
-    font-family: inherit;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s;
+  .nav-ctrl select option{background:#333;color:#fff;}
+  .horizon-btns{display:flex;gap:2px;}
+  .horizon-btns button{
+    padding:6px 16px;border:1px solid rgba(255,255,255,0.15);background:transparent;
+    color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;cursor:pointer;
+    font-family:inherit;letter-spacing:0.04em;transition:all 0.15s;
   }
-  .time-nav button:hover { background: rgba(255,255,255,0.15); color: #fff; }
-  .time-nav .period {
-    padding: 4px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #fff;
-    min-width: 140px;
-    text-align: center;
-  }
-  .view-btns { display: flex; gap: 2px; margin-left: 8px; }
-  .view-btns button {
-    padding: 6px 14px; border: none; background: transparent;
-    color: rgba(255,255,255,0.5); font-size: 12px; font-weight: 600;
-    cursor: pointer; border-radius: 6px; font-family: inherit;
-    text-transform: uppercase; letter-spacing: 0.06em;
-  }
-  .view-btns button.active { background: rgba(255,255,255,0.15); color: #fff; }
-  .view-btns button:hover { color: #fff; }
+  .horizon-btns button:first-child{border-radius:6px 0 0 6px;}
+  .horizon-btns button:last-child{border-radius:0 6px 6px 0;}
+  .horizon-btns button.active{background:rgba(255,255,255,0.15);color:#fff;}
+  .horizon-btns button:hover{color:#fff;}
 
   /* Loading */
-  .loading {
-    position: fixed; inset: 0; background: var(--bg);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center; z-index: 100;
-    transition: opacity 0.3s;
-  }
-  .loading.out { opacity: 0; pointer-events: none; }
-  .spinner {
-    width: 36px; height: 36px;
-    border: 3px solid var(--border);
-    border-top-color: var(--text);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin-bottom: 16px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading .msg { font-size: 14px; font-weight: 600; color: var(--text2); }
+  .loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;transition:opacity 0.3s;}
+  .loading.out{opacity:0;pointer-events:none;}
+  .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--text);border-radius:50%;animation:spin 0.7s linear infinite;margin-bottom:16px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading .msg{font-size:14px;font-weight:600;color:var(--text2);}
 
   /* Upload bar */
-  .upload-bar {
-    padding: 10px 32px;
-    background: #FFF8E1;
-    border-bottom: 1px solid #FFE082;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    font-size: 13px;
-    color: #5D4037;
-  }
-  .upload-bar strong { font-weight: 600; }
-  .file-btn {
-    padding: 5px 12px;
-    background: #fff;
-    border: 1px solid #E0E0E0;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    font-family: inherit;
-    color: var(--text2);
-  }
+  .upload-bar{padding:10px 28px;background:#FFF8E1;border-bottom:1px solid #FFE082;display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;color:#5D4037;}
+  .upload-bar strong{font-weight:600;}
+  .file-btn{padding:5px 12px;background:#fff;border:1px solid #E0E0E0;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;color:var(--text2);}
 
   /* Main */
-  .main { display: flex; height: calc(100vh - 56px); overflow: hidden; }
+  .main{display:flex;height:calc(100vh - 52px);overflow:hidden;}
 
-  /* Left sidebar — filters */
-  .filters {
-    width: 260px;
-    padding: 24px 20px;
-    border-right: 1px solid var(--border);
-    background: var(--surface);
-    overflow-y: auto;
-    flex-shrink: 0;
-  }
-  .filter-section { margin-bottom: 24px; }
-  .filter-title {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text3);
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-  .main-cat {
-    margin-bottom: 16px;
-  }
-  .main-cat-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 0;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-  .main-cat-header .indicator {
-    width: 14px; height: 14px;
-    border-radius: 3px;
-    flex-shrink: 0;
-  }
-  .sub-cat-list { padding-left: 22px; }
-  .sub-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 0;
-    cursor: pointer;
-    font-size: 12px;
-  }
-  .sub-box {
-    width: 14px; height: 14px;
-    border-radius: 3px;
-    border: 2px solid;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
-    flex-shrink: 0;
-  }
-  .sub-box .ck { color: #fff; font-size: 9px; font-weight: 700; }
-  .sub-label { font-weight: 500; color: var(--text); }
-  .sub-label.off { color: var(--text3); }
-  .sub-count { margin-left: auto; font-size: 10px; color: var(--text3); font-weight: 600; }
+  /* Left sidebar */
+  .filters{width:250px;padding:20px 18px;border-right:1px solid var(--border);background:var(--surface);overflow-y:auto;flex-shrink:0;}
+  .filter-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+  .main-cat{margin-bottom:16px;}
+  .main-cat-header{display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;}
+  .lane-toggle{width:16px;height:16px;border-radius:3px;border:2px solid;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;}
+  .lane-toggle .ck{color:#fff;font-size:9px;font-weight:700;}
+  .main-cat-label{flex:1;}
+  .main-cat-count{font-size:10px;color:var(--text3);font-weight:600;}
+  .sub-cat-list{padding-left:24px;margin-top:4px;}
+  .sub-item{display:flex;align-items:center;gap:8px;padding:3px 0;cursor:pointer;font-size:12px;}
+  .sub-box{width:14px;height:14px;border-radius:3px;border:2px solid;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;}
+  .sub-box .ck{color:#fff;font-size:9px;font-weight:700;}
+  .sub-label{font-weight:500;color:var(--text);}
+  .sub-label.off{color:var(--text3);}
+  .sub-count{margin-left:auto;font-size:10px;color:var(--text3);font-weight:600;}
 
-  /* Wheel area */
-  .wheel-area {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    min-width: 0;
-    background: var(--bg);
-  }
-  #wsvg { width: 100%; max-width: 680px; height: auto; }
+  .legend{border-top:1px solid var(--border);padding-top:14px;margin-top:14px;font-size:11px;color:var(--text3);line-height:2;}
+  .legend-row{display:flex;align-items:center;gap:6px;}
+  .legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
 
-  /* Right sidebar — detail */
-  .detail-panel {
-    width: 300px;
-    border-left: 1px solid var(--border);
-    background: var(--surface);
-    overflow-y: auto;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-  }
-  .detail-header {
-    padding: 20px 20px 16px;
-    border-bottom: 1px solid var(--border);
-  }
-  .detail-header .section-label {
-    font-size: 10px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.1em; color: var(--text3);
-  }
-  .event-card {
-    padding: 20px;
-    flex: 1;
-  }
-  .event-card.empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text3);
-    font-size: 13px;
-    font-style: italic;
-  }
-  .ev-tags { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
-  .ev-tag {
-    padding: 3px 10px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #fff;
-  }
-  .ev-tag.outline {
-    color: var(--text2);
-    background: transparent;
-    border: 1px solid var(--border);
-  }
-  .ev-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.02em; }
-  .ev-date { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
-  .ev-field { margin-bottom: 16px; }
-  .ev-field-label {
-    font-size: 10px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.08em; color: var(--text3); margin-bottom: 4px;
-  }
-  .ev-field-value { font-size: 13px; color: var(--text); line-height: 1.5; }
-  .ev-field-value a { color: #2874A6; text-decoration: none; font-weight: 500; }
-  .ev-field-value a:hover { text-decoration: underline; }
+  /* Wheel */
+  .wheel-area{flex:1;display:flex;align-items:center;justify-content:center;padding:16px;min-width:0;background:var(--bg);}
+  #wsvg{width:100%;max-width:680px;height:auto;}
 
-  /* Event list (below detail) */
-  .event-list-container {
-    border-top: 1px solid var(--border);
-    padding: 16px 20px;
-    overflow-y: auto;
-    flex: 1;
-  }
-  .event-list-container .section-label {
-    font-size: 10px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.1em; color: var(--text3); margin-bottom: 10px;
-  }
-  .ev-list-item {
-    padding: 8px 10px;
-    margin-bottom: 2px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.12s;
-    border: 1px solid transparent;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .ev-list-item:hover { background: var(--bg); }
-  .ev-list-item.sel { background: #F0F4F8; border-color: #CBD5E1; }
-  .ev-list-item .dot {
-    width: 8px; height: 8px;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
-  .ev-list-item .info { flex: 1; min-width: 0; }
-  .ev-list-item .nm { font-size: 12px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .ev-list-item .meta { font-size: 10px; color: var(--text3); margin-top: 1px; }
+  /* Right panel */
+  .detail-panel{width:300px;border-left:1px solid var(--border);background:var(--surface);overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;}
+  .detail-header{padding:16px 18px 12px;border-bottom:1px solid var(--border);}
+  .detail-header .sl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);}
+  .event-card{padding:18px;}
+  .event-card.empty{display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:13px;font-style:italic;min-height:120px;}
+  .ev-tags{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+  .ev-tag{padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#fff;}
+  .ev-tag.outline{color:var(--text2);background:transparent;border:1px solid var(--border);}
+  .ev-title{font-size:20px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em;}
+  .ev-date{font-size:13px;color:var(--text2);margin-bottom:16px;}
+  .ev-field{margin-bottom:14px;}
+  .ev-field-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:3px;}
+  .ev-field-value{font-size:13px;color:var(--text);line-height:1.5;}
+  .ev-field-value a{color:#2874A6;text-decoration:none;font-weight:500;}
+  .ev-field-value a:hover{text-decoration:underline;}
 
-  /* Drop overlay */
-  #drop-ov {
-    display: none; position: fixed; inset: 0;
-    background: rgba(26,26,26,0.08); z-index: 200;
-    pointer-events: none; backdrop-filter: blur(2px);
-  }
-  #drop-ov > div {
-    position: absolute; inset: 30px;
-    border: 3px dashed var(--text3);
-    border-radius: 16px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  #drop-ov .msg { font-size: 18px; font-weight: 700; color: var(--text2); }
+  .event-list-container{border-top:1px solid var(--border);padding:14px 18px;overflow-y:auto;flex:1;}
+  .event-list-container .sl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:10px;}
+  .ev-list-item{padding:8px 10px;margin-bottom:2px;border-radius:6px;cursor:pointer;transition:all 0.12s;border:1px solid transparent;display:flex;align-items:center;gap:8px;}
+  .ev-list-item:hover{background:var(--bg);}
+  .ev-list-item.sel{background:#F0F4F8;border-color:#CBD5E1;}
+  .ev-list-item .dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+  .ev-list-item .info{flex:1;min-width:0;}
+  .ev-list-item .nm{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ev-list-item .meta{font-size:10px;color:var(--text3);margin-top:1px;}
 
-  .hd { display: none !important; }
+  #drop-ov{display:none;position:fixed;inset:0;background:rgba(26,26,26,0.08);z-index:200;pointer-events:none;backdrop-filter:blur(2px);}
+  #drop-ov>div{position:absolute;inset:30px;border:3px dashed var(--text3);border-radius:16px;display:flex;align-items:center;justify-content:center;}
+  #drop-ov .msg{font-size:18px;font-weight:700;color:var(--text2);}
 
-  /* Footer */
-  .footer {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    padding: 8px 32px;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--text3);
-    z-index: 10;
-  }
-  .footer .brand { font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
-  .footer .tagline { font-style: italic; }
+  .footer{position:fixed;bottom:0;left:0;right:0;padding:6px 28px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text3);z-index:10;}
+  .footer .brand{font-weight:700;color:var(--text);letter-spacing:-0.02em;}
+  .footer .tagline{font-style:italic;}
 
-  @media (max-width: 1100px) {
-    .main { flex-direction: column; height: auto; }
-    .filters, .detail-panel { width: 100%; border: none; border-bottom: 1px solid var(--border); }
-    .detail-panel { border-top: 1px solid var(--border); }
+  .hd{display:none!important;}
+
+  @media(max-width:1100px){
+    .main{flex-direction:column;height:auto;}
+    .filters,.detail-panel{width:100%;border:none;border-bottom:1px solid var(--border);}
   }
 </style>
 </head>
 <body>
-
 <div class="loading" id="ld"><div class="spinner"></div><div class="msg">Loading events…</div></div>
 
 <div class="hd" id="app">
-  <!-- Header -->
   <div class="header">
     <div class="header-left">
-      <div>
-        <div class="logo">Intellishore</div>
-      </div>
+      <div class="logo">Intellishore</div>
       <div class="logo-sub">Yearly Wheel</div>
     </div>
-    <div style="display:flex;align-items:center;gap:12px;">
-      <div class="time-nav">
-        <button onclick="prevPeriod()" title="Previous">◂</button>
-        <div class="period" id="period-label"></div>
-        <button onclick="nextPeriod()" title="Next">▸</button>
+    <div class="nav-group">
+      <div class="nav-ctrl">
+        <span class="nav-label">From</span>
+        <select id="sel-month"></select>
+        <select id="sel-year"></select>
       </div>
-      <div class="view-btns">
-        <button class="active" id="btn-year" onclick="setView('year')">Year</button>
-        <button id="btn-h1" onclick="setView('h1')">H1</button>
-        <button id="btn-h2" onclick="setView('h2')">H2</button>
-        <button id="btn-q1" onclick="setView('q1')">Q1</button>
-        <button id="btn-q2" onclick="setView('q2')">Q2</button>
-        <button id="btn-q3" onclick="setView('q3')">Q3</button>
-        <button id="btn-q4" onclick="setView('q4')">Q4</button>
+      <div class="nav-ctrl">
+        <span class="nav-label">Horizon</span>
+        <div class="horizon-btns">
+          <button id="hz-6" onclick="setHorizon(6)">6 months</button>
+          <button id="hz-12" class="active" onclick="setHorizon(12)">12 months</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Upload bar -->
   <div class="upload-bar hd" id="ubar">
     <strong>📊 Sample data</strong>
-    <span>Drop a CSV/Excel file or</span>
+    <span>Drop a CSV/Excel or</span>
     <label class="file-btn">Choose File<input type="file" id="fi" accept=".xlsx,.xls,.csv" hidden></label>
     <span style="color:#8D6E63">Place <strong>events.csv</strong> alongside this file to auto-load.</span>
   </div>
 
-  <!-- Main -->
   <div class="main">
-    <!-- Filters -->
     <div class="filters">
-      <div class="filter-section">
-        <div class="filter-title">Categories</div>
-        <div id="cat-filters"></div>
+      <div class="filter-title">Categories</div>
+      <div id="cat-filters"></div>
+      <div class="legend">
+        <div class="legend-row"><div class="legend-dot" style="background:#14506A"></div> Internal (inner ring)</div>
+        <div class="legend-row"><div class="legend-dot" style="background:#C0392B"></div> External (middle ring)</div>
+        <div class="legend-row"><div class="legend-dot" style="background:#1E8449"></div> Marketing (outer ring)</div>
       </div>
     </div>
-
-    <!-- Wheel -->
-    <div class="wheel-area">
-      <svg id="wsvg" viewBox="0 0 700 700"></svg>
-    </div>
-
-    <!-- Detail + List -->
+    <div class="wheel-area"><svg id="wsvg" viewBox="0 0 700 700"></svg></div>
     <div class="detail-panel">
-      <div class="detail-header">
-        <div class="section-label">Event Details</div>
-      </div>
+      <div class="detail-header"><div class="sl">Event Details</div></div>
       <div id="ev-card" class="event-card empty">Click an event to view details</div>
       <div class="event-list-container">
-        <div class="section-label" id="ev-list-title">Events (0)</div>
+        <div class="sl" id="ev-list-title">Events (0)</div>
         <div id="ev-list"></div>
       </div>
     </div>
@@ -433,242 +189,160 @@
 <div id="drop-ov"><div><span class="msg">Drop CSV or Excel file here</span></div></div>
 
 <script>
-/* ══ CONFIG ══ */
-var CSV_FILE = "events.csv";
+var CSV_FILE="events.csv";
 
-/* ══ Category / color schema ══ */
-var SCHEMA = {
-  "Internal": {
-    color: "#14506A",
-    ring: 0, /* inner */
-    subs: {
-      "Teambuilding Days": "#14506A",
-      "Associate Guild":   "#2874A6",
-      "Social Events":     "#5DADE2"
-    }
-  },
-  "External": {
-    color: "#C0392B",
-    ring: 1, /* middle */
-    subs: {
-      "Webinars":    "#922B21",
-      "Conferences": "#C0392B",
-      "Health 3.0":  "#E74C3C"
-    }
-  },
-  "Marketing": {
-    color: "#1E8449",
-    ring: 2, /* outer */
-    subs: {
-      "Strategy": "#0E4D3A",
-      "AI":       "#1E8449",
-      "AE":       "#27AE60"
-    }
-  }
+var SCHEMA={
+  "Internal":{color:"#14506A",ring:0,subs:{"Teambuilding Days":"#14506A","Associate Guild":"#2874A6","Social Events":"#5DADE2"}},
+  "External":{color:"#C0392B",ring:1,subs:{"Webinars":"#922B21","Conferences":"#C0392B","Health 3.0":"#E74C3C"}},
+  "Marketing":{color:"#1E8449",ring:2,subs:{"Strategy":"#0E4D3A","AI":"#1E8449","AE":"#27AE60"}}
 };
+var MAIN_CATS=Object.keys(SCHEMA);
+var MO=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-var MAIN_CATS = Object.keys(SCHEMA);
-var MO = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-var MO_FULL = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+/* State */
+var allEv=[],activeSubs=new Set(),activeLanes=new Set(MAIN_CATS),hovI=null,selI=null,useSample=false;
+var fromMonth=new Date().getMonth(),fromYear=new Date().getFullYear(),horizon=12;
 
-/* ══ State ══ */
-var allEv=[], activeSubs=new Set(), hovI=null, selI=null, useSample=false;
-var viewYear=2026, viewMode="year"; // year, h1, h2, q1-q4
-
-/* ══ Parsing ══ */
-function pDate(v){
-  if(!v)return null;
-  if(v instanceof Date)return isNaN(v)?null:v;
-  var s=String(v).trim();
-  var m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
-  if(m)return new Date(+m[1],+m[2]-1,+m[3]);
-  m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if(m)return new Date(+m[3],+m[1]-1,+m[2]);
-  m=s.match(/^(\d{1,2})[\-.](\d{1,2})[\-.](\d{4})/);
-  if(m)return new Date(+m[3],+m[2]-1,+m[1]);
-  var d=new Date(s);return isNaN(d)?null:d;
-}
-function fCol(keys,pats){for(var p=0;p<pats.length;p++){for(var k=0;k<keys.length;k++){if(pats[p].test(keys[k]))return keys[k];}}return null;}
+/* Parsing */
+function pDate(v){if(!v)return null;if(v instanceof Date)return isNaN(v)?null:v;var s=String(v).trim(),m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);if(m)return new Date(+m[1],+m[2]-1,+m[3]);m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);if(m)return new Date(+m[3],+m[1]-1,+m[2]);m=s.match(/^(\d{1,2})[\-.](\d{1,2})[\-.](\d{4})/);if(m)return new Date(+m[3],+m[2]-1,+m[1]);var d=new Date(s);return isNaN(d)?null:d;}
+function fCol(k,p){for(var i=0;i<p.length;i++){for(var j=0;j<k.length;j++){if(p[i].test(k[j]))return k[j];}}return null;}
 function parseRows(raw){
   var rows=[];
   for(var i=0;i<raw.length;i++){
     var r=raw[i],keys=Object.keys(r);
-    var dk=fCol(keys,[/^Date$/i,/date/i]);
-    var nk=fCol(keys,[/^Title$/i,/^Name$/i,/title/i,/name/i]);
-    var mk=fCol(keys,[/^MainCat/i,/^main/i,/^type$/i]);
-    var sk=fCol(keys,[/^SubCat/i,/^sub/i,/^category$/i]);
-    var xk=fCol(keys,[/^Desc/i,/desc/i]);
-    var ok=fCol(keys,[/^Owner/i,/owner/i]);
-    var lk=fCol(keys,[/^Link$/i,/^URL$/i,/link/i,/url/i]);
-    var date=dk?pDate(r[dk]):null;
-    if(!date)continue;
-    rows.push({
-      date:date,
-      name:String(r[nk]||"").trim()||"(Untitled)",
-      mainCat:String(r[mk]||"Internal").trim(),
-      subCat:String(r[sk]||"Other").trim(),
-      description:String(r[xk]||"").trim(),
-      owner:String(r[ok]||"").trim(),
-      link:String(r[lk]||"").trim()
-    });
+    var dk=fCol(keys,[/^Date$/i,/date/i]),nk=fCol(keys,[/^Title$/i,/^Name$/i,/title/i,/name/i]);
+    var mk=fCol(keys,[/^MainCat/i,/^main/i,/^type$/i]),sk=fCol(keys,[/^SubCat/i,/^sub/i,/^category$/i]);
+    var xk=fCol(keys,[/^Desc/i,/desc/i]),ok=fCol(keys,[/^Owner/i,/owner/i]),lk=fCol(keys,[/^Link$/i,/^URL$/i,/link/i,/url/i]);
+    var date=dk?pDate(r[dk]):null;if(!date)continue;
+    rows.push({date:date,name:String(r[nk]||"").trim()||"(Untitled)",mainCat:String(r[mk]||"Internal").trim(),subCat:String(r[sk]||"Other").trim(),description:String(r[xk]||"").trim(),owner:String(r[ok]||"").trim(),link:String(r[lk]||"").trim()});
   }
-  rows.sort(function(a,b){return a.date-b.date;});
-  return rows;
+  rows.sort(function(a,b){return a.date-b.date;});return rows;
 }
-function parseCSV(text){
-  var lines=[],cur=[],field="",inQ=false;
-  for(var i=0;i<text.length;i++){
-    var c=text[i];
-    if(inQ){if(c==='"'){if(i+1<text.length&&text[i+1]==='"'){field+='"';i++;}else inQ=false;}else field+=c;}
-    else{if(c==='"')inQ=true;else if(c===','){cur.push(field.trim());field="";}else if(c==='\n'||c==='\r'){if(c==='\r'&&i+1<text.length&&text[i+1]==='\n')i++;cur.push(field.trim());if(cur.length>1||cur[0]!=="")lines.push(cur);cur=[];field="";}else field+=c;}
-  }
-  cur.push(field.trim());if(cur.length>1||cur[0]!=="")lines.push(cur);
-  if(lines.length<2)return[];
-  var h=lines[0],objs=[];
-  for(var j=1;j<lines.length;j++){var o={};for(var k=0;k<h.length;k++)o[h[k]]=lines[j][k]||"";objs.push(o);}
-  return objs;
+function parseCSV(t){
+  var lines=[],cur=[],f="",q=false;
+  for(var i=0;i<t.length;i++){var c=t[i];if(q){if(c==='"'){if(i+1<t.length&&t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}else{if(c==='"')q=true;else if(c===','){cur.push(f.trim());f="";}else if(c==='\n'||c==='\r'){if(c==='\r'&&i+1<t.length&&t[i+1]==='\n')i++;cur.push(f.trim());if(cur.length>1||cur[0]!=="")lines.push(cur);cur=[];f="";}else f+=c;}}
+  cur.push(f.trim());if(cur.length>1||cur[0]!=="")lines.push(cur);
+  if(lines.length<2)return[];var h=lines[0],o=[];
+  for(var j=1;j<lines.length;j++){var obj={};for(var k=0;k<h.length;k++)obj[h[k]]=lines[j][k]||"";o.push(obj);}return o;
 }
 
-/* ══ Helpers ══ */
-function subColor(mainCat,subCat){
-  var s=SCHEMA[mainCat];
-  if(!s)return"#999";
-  return s.subs[subCat]||s.color;
-}
-function getRing(mainCat){var s=SCHEMA[mainCat];return s?s.ring:0;}
+/* Helpers */
+function subColor(mc,sc){var s=SCHEMA[mc];return s?(s.subs[sc]||s.color):"#999";}
+function getRing(mc){var s=SCHEMA[mc];return s?s.ring:0;}
 
-function getViewRange(){
-  var y=viewYear;
-  switch(viewMode){
-    case"h1":return[new Date(y,0,1),new Date(y,6,1)];
-    case"h2":return[new Date(y,6,1),new Date(y+1,0,1)];
-    case"q1":return[new Date(y,0,1),new Date(y,3,1)];
-    case"q2":return[new Date(y,3,1),new Date(y,6,1)];
-    case"q3":return[new Date(y,6,1),new Date(y,9,1)];
-    case"q4":return[new Date(y,9,1),new Date(y+1,0,1)];
-    default:return[new Date(y,0,1),new Date(y+1,0,1)];
-  }
+function getRange(){
+  var start=new Date(fromYear,fromMonth,1);
+  var end=new Date(fromYear,fromMonth+horizon,1);
+  return[start,end];
 }
 function getFiltered(){
-  var range=getViewRange();
+  var r=getRange();
   return allEv.filter(function(e){
-    return e.date>=range[0]&&e.date<range[1]&&activeSubs.has(e.mainCat+"::"+e.subCat);
+    return e.date>=r[0]&&e.date<r[1]&&activeLanes.has(e.mainCat)&&activeSubs.has(e.mainCat+"::"+e.subCat);
   });
 }
 
 /* Geometry */
-function dateToAngle(date){
-  var range=getViewRange();
-  var frac=(date-range[0])/(range[1]-range[0]);
-  return frac*360-90;
-}
+function d2a(date){var r=getRange();var frac=(date-r[0])/(r[1]-r[0]);return frac*360-90;}
 function pol(cx,cy,r,dg){var rd=dg*Math.PI/180;return{x:cx+r*Math.cos(rd),y:cy+r*Math.sin(rd)};}
 function arc(cx,cy,r,sa,ea){var s=pol(cx,cy,r,sa),e=pol(cx,cy,r,ea);return"M "+s.x+" "+s.y+" A "+r+" "+r+" 0 "+(ea-sa>180?1:0)+" 1 "+e.x+" "+e.y;}
+/* Full annular sector path */
+function annSector(cx,cy,r1,r2,sa,ea){
+  var s1=pol(cx,cy,r1,sa),e1=pol(cx,cy,r1,ea),s2=pol(cx,cy,r2,sa),e2=pol(cx,cy,r2,ea);
+  var lg=ea-sa>180?1:0;
+  return"M "+s2.x+" "+s2.y+" A "+r2+" "+r2+" 0 "+lg+" 1 "+e2.x+" "+e2.y+" L "+e1.x+" "+e1.y+" A "+r1+" "+r1+" 0 "+lg+" 0 "+s1.x+" "+s1.y+" Z";
+}
 
-/* ══ Apply ══ */
+/* Nav setup */
+function buildNav(){
+  var sm=document.getElementById("sel-month");
+  sm.innerHTML="";
+  for(var i=0;i<12;i++){var o=document.createElement("option");o.value=i;o.textContent=MO[i];if(i===fromMonth)o.selected=true;sm.appendChild(o);}
+  sm.onchange=function(){fromMonth=parseInt(this.value);selI=null;hovI=null;render();};
+
+  var sy=document.getElementById("sel-year");
+  sy.innerHTML="";
+  var years=new Set();allEv.forEach(function(e){years.add(e.date.getFullYear());});
+  years.add(fromYear);years.add(fromYear-1);years.add(fromYear+1);
+  var sorted=Array.from(years).sort();
+  sorted.forEach(function(y){var o=document.createElement("option");o.value=y;o.textContent=y;if(y===fromYear)o.selected=true;sy.appendChild(o);});
+  sy.onchange=function(){fromYear=parseInt(this.value);selI=null;hovI=null;render();};
+}
+function setHorizon(h){
+  horizon=h;
+  document.getElementById("hz-6").classList.toggle("active",h===6);
+  document.getElementById("hz-12").classList.toggle("active",h===12);
+  selI=null;hovI=null;render();
+}
+
+/* Apply */
 function apply(evts){
   allEv=evts;
-  // Detect year from data
-  if(evts.length>0)viewYear=evts[0].date.getFullYear();
-  // Activate all subs
-  activeSubs=new Set();
+  activeSubs=new Set();activeLanes=new Set(MAIN_CATS);
   for(var mc in SCHEMA){for(var sc in SCHEMA[mc].subs){activeSubs.add(mc+"::"+sc);}}
-  // Also activate any subs in data not in schema
   for(var i=0;i<evts.length;i++){activeSubs.add(evts[i].mainCat+"::"+evts[i].subCat);}
   hovI=null;selI=null;
   document.getElementById("ld").classList.add("hd");
   document.getElementById("app").classList.remove("hd");
   if(useSample)document.getElementById("ubar").classList.remove("hd");
-  render();
+  buildNav();render();
 }
 
-/* ══ File handling ══ */
+/* File */
 function handleFile(file){
   var reader=new FileReader();
-  if(/\.csv$/i.test(file.name)){
-    reader.onload=function(e){var evts=parseRows(parseCSV(e.target.result));if(evts.length>0){useSample=false;document.getElementById("ubar").classList.add("hd");apply(evts);}};
-    reader.readAsText(file);
+  if(/\.csv$/i.test(file.name)){reader.onload=function(e){var evts=parseRows(parseCSV(e.target.result));if(evts.length>0){useSample=false;document.getElementById("ubar").classList.add("hd");apply(evts);}};reader.readAsText(file);}
+  else{reader.onload=function(e){var wb=XLSX.read(new Uint8Array(e.target.result),{type:"array"});var evts=parseRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]));if(evts.length>0){useSample=false;document.getElementById("ubar").classList.add("hd");apply(evts);}};reader.readAsArrayBuffer(file);}
+}
+
+/* Toggle */
+function toggleLane(mc){
+  if(activeLanes.has(mc)){
+    activeLanes.delete(mc);
+    var s=SCHEMA[mc];for(var sc in s.subs)activeSubs.delete(mc+"::"+sc);
   }else{
-    reader.onload=function(e){var wb=XLSX.read(new Uint8Array(e.target.result),{type:"array"});var ws=wb.Sheets[wb.SheetNames[0]];var evts=parseRows(XLSX.utils.sheet_to_json(ws));if(evts.length>0){useSample=false;document.getElementById("ubar").classList.add("hd");apply(evts);}};
-    reader.readAsArrayBuffer(file);
+    activeLanes.add(mc);
+    var s=SCHEMA[mc];for(var sc in s.subs)activeSubs.add(mc+"::"+sc);
   }
+  selI=null;render();
+}
+function toggleSub(key,mc){
+  if(activeSubs.has(key))activeSubs.delete(key);else activeSubs.add(key);
+  /* Check if any sub in this lane is active */
+  var s=SCHEMA[mc],any=false;
+  for(var sc in s.subs){if(activeSubs.has(mc+"::"+sc)){any=true;break;}}
+  if(any)activeLanes.add(mc);else activeLanes.delete(mc);
+  selI=null;render();
 }
 
-/* ══ Time nav ══ */
-function updatePeriodLabel(){
-  var lbl="";
-  switch(viewMode){
-    case"year":lbl=viewYear;break;
-    case"h1":lbl="H1 "+viewYear;break;
-    case"h2":lbl="H2 "+viewYear;break;
-    case"q1":lbl="Q1 "+viewYear;break;
-    case"q2":lbl="Q2 "+viewYear;break;
-    case"q3":lbl="Q3 "+viewYear;break;
-    case"q4":lbl="Q4 "+viewYear;break;
-  }
-  document.getElementById("period-label").textContent=lbl;
-}
-function setView(mode){
-  viewMode=mode;
-  document.querySelectorAll(".view-btns button").forEach(function(b){b.classList.remove("active");});
-  document.getElementById("btn-"+mode).classList.add("active");
-  selI=null;hovI=null;
-  render();
-}
-function prevPeriod(){
-  if(viewMode==="year")viewYear--;
-  else if(viewMode==="h1"){viewMode="h2";viewYear--;}
-  else if(viewMode==="h2"){viewMode="h1";}
-  else{
-    var qi=parseInt(viewMode[1]);
-    if(qi===1){viewMode="q4";viewYear--;}
-    else viewMode="q"+(qi-1);
-  }
-  document.querySelectorAll(".view-btns button").forEach(function(b){b.classList.remove("active");});
-  document.getElementById("btn-"+viewMode).classList.add("active");
-  selI=null;hovI=null;render();
-}
-function nextPeriod(){
-  if(viewMode==="year")viewYear++;
-  else if(viewMode==="h1"){viewMode="h2";}
-  else if(viewMode==="h2"){viewMode="h1";viewYear++;}
-  else{
-    var qi=parseInt(viewMode[1]);
-    if(qi===4){viewMode="q1";viewYear++;}
-    else viewMode="q"+(qi+1);
-  }
-  document.querySelectorAll(".view-btns button").forEach(function(b){b.classList.remove("active");});
-  document.getElementById("btn-"+viewMode).classList.add("active");
-  selI=null;hovI=null;render();
-}
-
-/* ══ Render ══ */
+/* Render */
 function render(){
-  updatePeriodLabel();
   var f=getFiltered();
   rCats();rWheel(f);rList(f);rDetail(f);
-  document.getElementById("footer-date").textContent=MO_FULL[new Date().getMonth()]+" "+new Date().getFullYear();
+  document.getElementById("footer-date").textContent=MO[new Date().getMonth()]+" "+new Date().getFullYear();
 }
 
 function rCats(){
   var el=document.getElementById("cat-filters");el.innerHTML="";
   MAIN_CATS.forEach(function(mc){
-    var s=SCHEMA[mc];
+    var s=SCHEMA[mc],laneOn=activeLanes.has(mc);
+    var totalInLane=allEv.filter(function(e){return e.mainCat===mc;}).length;
     var div=document.createElement("div");div.className="main-cat";
-    // Header
+
+    /* Lane header with toggle */
     var hdr=document.createElement("div");hdr.className="main-cat-header";
-    hdr.innerHTML='<div class="indicator" style="background:'+s.color+'"></div>'+mc;
+    hdr.innerHTML='<div class="lane-toggle" style="border-color:'+s.color+';background:'+(laneOn?s.color:'transparent')+'">'+(laneOn?'<span class="ck">✓</span>':'')+'</div><span class="main-cat-label">'+mc+'</span><span class="main-cat-count">'+totalInLane+'</span>';
+    hdr.onclick=(function(m){return function(){toggleLane(m);};})(mc);
     div.appendChild(hdr);
-    // Subs
+
+    /* Sub-categories */
     var subDiv=document.createElement("div");subDiv.className="sub-cat-list";
     Object.keys(s.subs).forEach(function(sc){
-      var key=mc+"::"+sc;
-      var on=activeSubs.has(key);
-      var col=s.subs[sc];
+      var key=mc+"::"+sc,on=activeSubs.has(key),col=s.subs[sc];
       var cnt=allEv.filter(function(e){return e.mainCat===mc&&e.subCat===sc;}).length;
       var item=document.createElement("div");item.className="sub-item";
-      item.innerHTML='<div class="sub-box" style="border-color:'+col+';background:'+(on?col:"transparent")+'">'+(on?'<span class="ck">✓</span>':'')+'</div><span class="sub-label'+(on?'':' off')+'">'+sc+'</span><span class="sub-count">'+cnt+'</span>';
-      item.onclick=(function(k){return function(){activeSubs.has(k)?activeSubs.delete(k):activeSubs.add(k);selI=null;render();};})(key);
+      item.innerHTML='<div class="sub-box" style="border-color:'+col+';background:'+(on?col:'transparent')+'">'+(on?'<span class="ck">✓</span>':'')+'</div><span class="sub-label'+(on?'':' off')+'">'+sc+'</span><span class="sub-count">'+cnt+'</span>';
+      item.onclick=(function(k,m){return function(e){e.stopPropagation();toggleSub(k,m);};})(key,mc);
       subDiv.appendChild(item);
     });
     div.appendChild(subDiv);
@@ -684,9 +358,9 @@ function rDetail(f){
   var h='<div class="ev-tags"><div class="ev-tag" style="background:'+col+'">'+ev.subCat+'</div><div class="ev-tag outline">'+ev.mainCat+'</div></div>';
   h+='<div class="ev-title">'+ev.name+'</div>';
   h+='<div class="ev-date">'+ds+'</div>';
-  if(ev.description){h+='<div class="ev-field"><div class="ev-field-label">Description</div><div class="ev-field-value">'+ev.description+'</div></div>';}
-  if(ev.owner){h+='<div class="ev-field"><div class="ev-field-label">Owner</div><div class="ev-field-value">'+ev.owner+'</div></div>';}
-  if(ev.link){h+='<div class="ev-field"><div class="ev-field-label">Link</div><div class="ev-field-value"><a href="'+ev.link+'" target="_blank">'+ev.link+'</a></div></div>';}
+  if(ev.description)h+='<div class="ev-field"><div class="ev-field-label">Description</div><div class="ev-field-value">'+ev.description+'</div></div>';
+  if(ev.owner)h+='<div class="ev-field"><div class="ev-field-label">Owner</div><div class="ev-field-value">'+ev.owner+'</div></div>';
+  if(ev.link)h+='<div class="ev-field"><div class="ev-field-label">Link</div><div class="ev-field-value"><a href="'+ev.link+'" target="_blank" rel="noopener">'+ev.link+'</a></div></div>';
   el.className="event-card";el.innerHTML=h;
 }
 
@@ -696,7 +370,7 @@ function rList(f){
   for(var i=0;i<f.length;i++){
     var ev=f[i],col=subColor(ev.mainCat,ev.subCat);
     var d=document.createElement("div");d.className="ev-list-item"+(selI===i?" sel":"");
-    d.innerHTML='<div class="dot" style="background:'+col+'"></div><div class="info"><div class="nm">'+ev.name+'</div><div class="meta">'+ev.date.toLocaleDateString("en-GB",{day:"numeric",month:"short"})+' · '+ev.subCat+'</div></div>';
+    d.innerHTML='<div class="dot" style="background:'+col+'"></div><div class="info"><div class="nm">'+ev.name+'</div><div class="meta">'+ev.date.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"2-digit"})+' · '+ev.subCat+'</div></div>';
     d.onmouseenter=(function(idx){return function(){hovI=idx;rWheel(getFiltered());};})(i);
     d.onmouseleave=function(){hovI=null;rWheel(getFiltered());};
     d.onclick=(function(idx){return function(){selI=selI===idx?null:idx;render();};})(i);
@@ -708,16 +382,16 @@ function rWheel(f){
   var svg=document.getElementById("wsvg");
   var S=700,cx=350,cy=350;
 
-  /* Three rings — inner to outer */
+  /* Ring geometry */
   var ringDefs=[
-    {r1:130,r2:205,cat:"Internal",fill:"var(--int-ring)"},
-    {r1:210,r2:265,cat:"External",fill:"var(--ext-ring)"},
-    {r1:270,r2:320,cat:"Marketing",fill:"var(--mkt-ring)"}
+    {r1:135,r2:200,cat:"Internal",bg:"rgba(20,80,106,0.07)"},
+    {r1:204,r2:260,cat:"External",bg:"rgba(192,57,43,0.07)"},
+    {r1:264,r2:316,cat:"Marketing",bg:"rgba(30,132,73,0.07)"}
   ];
-  var centerR=125;
+  var centerR=130,outerR=320;
 
-  /* Determine month labels based on view */
-  var range=getViewRange();
+  /* Months in range */
+  var range=getRange();
   var months=[];
   var d=new Date(range[0]);
   while(d<range[1]){months.push(new Date(d));d=new Date(d.getFullYear(),d.getMonth()+1,1);}
@@ -729,125 +403,97 @@ function rWheel(f){
   h+='<radialGradient id="cg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FAFAF8"/><stop offset="100%" stop-color="#EEEDEA"/></radialGradient>';
   h+='</defs>';
 
-  /* Background */
-  h+='<circle cx="'+cx+'" cy="'+cy+'" r="328" fill="#EEEDEA"/>';
+  /* Outer background */
+  h+='<circle cx="'+cx+'" cy="'+cy+'" r="'+outerR+'" fill="#EEEDEA"/>';
 
-  /* Ring backgrounds */
-  for(var ri=0;ri<ringDefs.length;ri++){
+  /* Draw ring backgrounds as proper annular rings */
+  for(var ri=ringDefs.length-1;ri>=0;ri--){
     var rd=ringDefs[ri];
-    h+='<circle cx="'+cx+'" cy="'+cy+'" r="'+rd.r2+'" fill="'+rd.fill+'" stroke="var(--border)" stroke-width="0.5"/>';
-    h+='<circle cx="'+cx+'" cy="'+cy+'" r="'+rd.r1+'" fill="var(--bg)" stroke="var(--border)" stroke-width="0.5"/>';
-    /* Ring label */
-    var labelR=(rd.r1+rd.r2)/2;
-    var labelAngle=-90-3; /* just above 12 o'clock */
-    var lp=pol(cx,cy,labelR,labelAngle);
+    if(!activeLanes.has(rd.cat))continue;
+    h+='<path d="'+annSector(cx,cy,rd.r1,rd.r2,-90,270)+'" fill="'+rd.bg+'" stroke="'+rd.bg.replace('0.07','0.15')+'" stroke-width="0.5"/>';
   }
 
-  /* Rebuild ring backgrounds as proper annular sectors */
-  /* First draw filled annular rings */
-  for(var ri=0;ri<ringDefs.length;ri++){
-    var rd=ringDefs[ri];
-    /* Draw annular ring */
-    h+='<path d="M '+(cx)+' '+(cy-rd.r2)+' A '+rd.r2+' '+rd.r2+' 0 1 1 '+(cx-0.01)+' '+(cy-rd.r2)+' Z M '+(cx)+' '+(cy-rd.r1)+' A '+rd.r1+' '+rd.r1+' 0 1 0 '+(cx-0.01)+' '+(cy-rd.r1)+' Z" fill="'+rd.fill+'" fill-rule="evenodd"/>';
-  }
+  /* Fill gap between rings and center with bg */
+  h+='<circle cx="'+cx+'" cy="'+cy+'" r="'+centerR+'" fill="url(#cg)"/>';
 
   /* Month separators + labels */
   for(var mi=0;mi<numSeg;mi++){
-    var segStart=(mi/numSeg)*360-90;
-    var segEnd=((mi+1)/numSeg)*360-90;
-    var midA=(segStart+segEnd)/2;
+    var segA=(mi/numSeg)*360-90;
+    var midA=((mi+0.5)/numSeg)*360-90;
 
-    /* Separator line across all rings */
-    var lineStart=pol(cx,cy,centerR,segStart);
-    var lineEnd=pol(cx,cy,ringDefs[2].r2+2,segStart);
-    h+='<line x1="'+lineStart.x+'" y1="'+lineStart.y+'" x2="'+lineEnd.x+'" y2="'+lineEnd.y+'" stroke="var(--border)" stroke-width="0.8"/>';
+    /* Separator line */
+    var ls=pol(cx,cy,centerR,segA),le=pol(cx,cy,outerR-4,segA);
+    h+='<line x1="'+ls.x+'" y1="'+ls.y+'" x2="'+le.x+'" y2="'+le.y+'" stroke="#D5D2CD" stroke-width="0.7"/>';
 
-    /* Month label outside */
-    var lp=pol(cx,cy,ringDefs[2].r2+16,midA);
-    var moIdx=months[mi].getMonth();
-    h+='<text x="'+lp.x+'" y="'+lp.y+'" text-anchor="middle" dominant-baseline="middle" style="font-size:10px;font-family:Outfit,sans-serif;font-weight:700;fill:var(--text3);letter-spacing:0.06em;text-transform:uppercase">'+MO[moIdx]+'</text>';
+    /* Month label */
+    var lp=pol(cx,cy,outerR+18,midA);
+    var moDate=months[mi];
+    var label=MO[moDate.getMonth()]+" "+String(moDate.getFullYear()).slice(2);
+    h+='<text x="'+lp.x+'" y="'+lp.y+'" text-anchor="middle" dominant-baseline="middle" style="font-size:10px;font-family:Outfit,sans-serif;font-weight:700;fill:#8A857F;letter-spacing:0.04em">'+label+'</text>';
   }
 
-  /* Center circle */
-  h+='<circle cx="'+cx+'" cy="'+cy+'" r="'+centerR+'" fill="url(#cg)" stroke="var(--border)" stroke-width="0.8"/>';
+  /* Center circle border */
+  h+='<circle cx="'+cx+'" cy="'+cy+'" r="'+centerR+'" fill="url(#cg)" stroke="#D5D2CD" stroke-width="0.8"/>';
 
   /* Center text */
-  var periodTxt="";
-  switch(viewMode){
-    case"year":periodTxt=viewYear;break;
-    case"h1":periodTxt="H1 "+viewYear;break;
-    case"h2":periodTxt="H2 "+viewYear;break;
-    default:periodTxt=viewMode.toUpperCase()+" "+viewYear;
-  }
-  h+='<text x="'+cx+'" y="'+(cy-18)+'" text-anchor="middle" dominant-baseline="middle" style="font-size:26px;font-family:Outfit,sans-serif;font-weight:800;fill:var(--text);letter-spacing:-0.03em">'+periodTxt+'</text>';
-  h+='<text x="'+cx+'" y="'+(cy+8)+'" text-anchor="middle" dominant-baseline="middle" style="font-size:10px;font-family:Outfit,sans-serif;font-weight:600;fill:var(--text3);letter-spacing:0.1em;text-transform:uppercase">Yearly Wheel</text>';
-  h+='<text x="'+cx+'" y="'+(cy+24)+'" text-anchor="middle" dominant-baseline="middle" style="font-size:11px;font-family:Outfit,sans-serif;fill:var(--text3)">'+f.length+' events</text>';
+  var periodTxt=MO[fromMonth]+" "+fromYear+" — ";
+  var endDate=new Date(fromYear,fromMonth+horizon,0);
+  periodTxt+=MO[endDate.getMonth()]+" "+endDate.getFullYear();
+  h+='<text x="'+cx+'" y="'+(cy-16)+'" text-anchor="middle" dominant-baseline="middle" style="font-size:15px;font-family:Outfit,sans-serif;font-weight:700;fill:var(--text);letter-spacing:-0.02em">'+periodTxt+'</text>';
+  h+='<text x="'+cx+'" y="'+(cy+4)+'" text-anchor="middle" dominant-baseline="middle" style="font-size:10px;font-family:Outfit,sans-serif;font-weight:600;fill:#A09A93;letter-spacing:0.1em;text-transform:uppercase">Yearly Wheel</text>';
+  h+='<text x="'+cx+'" y="'+(cy+20)+'" text-anchor="middle" dominant-baseline="middle" style="font-size:11px;font-family:Outfit,sans-serif;fill:#A09A93">'+f.length+' events</text>';
 
-  /* Ring labels in center area */
-  var ringLabY = cy + 48;
-  for(var ri=0;ri<ringDefs.length;ri++){
-    var rd=ringDefs[ri];
-    var col=SCHEMA[rd.cat].color;
-    var lx = cx - 60 + ri*60;
-    h+='<circle cx="'+lx+'" cy="'+ringLabY+'" r="4" fill="'+col+'"/>';
-    h+='<text x="'+(lx+8)+'" y="'+ringLabY+'" text-anchor="start" dominant-baseline="middle" style="font-size:9px;font-family:Outfit,sans-serif;font-weight:600;fill:var(--text3)">'+rd.cat.substring(0,3).toUpperCase()+'</text>';
-  }
+  /* Ring labels */
+  var ly=cy+40;
+  var labels=[{cat:"Internal",col:"#14506A",x:cx-65},{cat:"External",col:"#C0392B",x:cx-5},{cat:"Marketing",col:"#1E8449",x:cx+55}];
+  labels.forEach(function(l){
+    if(!activeLanes.has(l.cat))return;
+    h+='<circle cx="'+l.x+'" cy="'+ly+'" r="3.5" fill="'+l.col+'"/>';
+    h+='<text x="'+(l.x+7)+'" y="'+ly+'" text-anchor="start" dominant-baseline="middle" style="font-size:9px;font-family:Outfit,sans-serif;font-weight:600;fill:#A09A93">'+l.cat.substring(0,3).toUpperCase()+'</text>';
+  });
 
-  /* Events — place in correct ring */
+  /* Place events per ring with collision avoidance */
   var eventsByRing=[[],[],[]];
   for(var i=0;i<f.length;i++){
-    var ev=f[i];
-    var ring=getRing(ev.mainCat);
-    eventsByRing[ring].push({idx:i,ev:ev,angle:dateToAngle(ev.date)});
+    var ev=f[i],ring=getRing(ev.mainCat);
+    eventsByRing[ring].push({idx:i,ev:ev,angle:d2a(ev.date)});
   }
 
-  /* Position with collision avoidance per ring */
   var allPos=[];
   for(var ri=0;ri<3;ri++){
-    var rd=ringDefs[ri];
-    var evts=eventsByRing[ri];
+    var rd=ringDefs[ri],evts=eventsByRing[ri];
     evts.sort(function(a,b){return a.angle-b.angle;});
-    var subRings=[];
-    var numSub=3;
-    var step=(rd.r2-rd.r1-8)/(numSub);
-    for(var si=0;si<numSub;si++){subRings.push(rd.r1+6+step*si+step/2);}
-
+    var nSub=3,step=(rd.r2-rd.r1-8)/nSub,subR=[];
+    for(var si=0;si<nSub;si++)subR.push(rd.r1+6+step*si+step/2);
     var placed=[];
     for(var j=0;j<evts.length;j++){
-      var ev=evts[j];
-      var best=0;
-      for(var si=0;si<subRings.length;si++){
+      var ev=evts[j],best=0;
+      for(var si=0;si<subR.length;si++){
         var ok=true;
-        for(var p=0;p<placed.length;p++){
-          if(placed[p].sr===si&&Math.abs(placed[p].angle-ev.angle)<(360/numSeg*0.35)){ok=false;break;}
-        }
-        if(ok){best=si;break;}
-        best=si;
+        for(var p=0;p<placed.length;p++){if(placed[p].sr===si&&Math.abs(placed[p].angle-ev.angle)<(360/numSeg*0.4)){ok=false;break;}}
+        if(ok){best=si;break;}best=si;
       }
-      var pos={idx:ev.idx,ev:ev.ev,angle:ev.angle,radius:subRings[best],sr:best};
-      placed.push(pos);
-      allPos.push(pos);
+      var pos={idx:ev.idx,ev:ev.ev,angle:ev.angle,radius:subR[best],sr:best};
+      placed.push(pos);allPos.push(pos);
     }
   }
 
   /* Draw events */
   for(var i=0;i<allPos.length;i++){
-    var item=allPos[i];
-    var p=pol(cx,cy,item.radius,item.angle);
+    var item=allPos[i],p=pol(cx,cy,item.radius,item.angle);
     var col=subColor(item.ev.mainCat,item.ev.subCat);
     var act=hovI===item.idx||selI===item.idx;
-    var ds=act?7:5;
+    var ds=act?7:4.5;
     var flt=act?"url(#gl)":"url(#sh)";
-
     h+='<g data-i="'+item.idx+'" class="ev" style="cursor:pointer">';
     h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="14" fill="transparent"/>';
     h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="'+ds+'" fill="'+col+'" stroke="#fff" stroke-width="1.5" filter="'+flt+'"/>';
     if(act){
-      var tw=item.ev.name.length*5.8+20;
+      var tw=item.ev.name.length*5.5+20;
       var tx=p.x+12,ty=p.y;
-      /* Check if label would go offscreen */
-      if(tx+tw>S-10){tx=p.x-tw-8;}
-      h+='<rect x="'+tx+'" y="'+(ty-11)+'" width="'+tw+'" height="22" rx="4" fill="var(--text)" opacity="0.92"/>';
+      if(tx+tw>S-10)tx=p.x-tw-8;
+      if(ty-11<10)ty=20;
+      h+='<rect x="'+tx+'" y="'+(ty-11)+'" width="'+tw+'" height="22" rx="4" fill="#1A1A1A" opacity="0.92"/>';
       h+='<text x="'+(tx+10)+'" y="'+(ty+1)+'" style="font-size:10px;font-family:Outfit,sans-serif;fill:#fff;font-weight:600">'+item.ev.name+'</text>';
     }
     h+='</g>';
@@ -855,7 +501,6 @@ function rWheel(f){
 
   svg.innerHTML=h;
 
-  /* Attach listeners */
   var dots=svg.querySelectorAll(".ev");
   for(var j=0;j<dots.length;j++){
     (function(g){
@@ -867,61 +512,58 @@ function rWheel(f){
   }
 }
 
-function resetF(){
-  activeSubs=new Set();
-  for(var mc in SCHEMA){for(var sc in SCHEMA[mc].subs){activeSubs.add(mc+"::"+sc);}}
-  selI=null;render();
-}
-
-/* ══ Drag & Drop ══ */
+/* Drag & Drop */
 document.addEventListener("dragover",function(e){e.preventDefault();document.getElementById("drop-ov").style.display="block";});
 document.addEventListener("dragleave",function(e){if(!e.relatedTarget||e.relatedTarget===document.documentElement)document.getElementById("drop-ov").style.display="none";});
 document.addEventListener("drop",function(e){e.preventDefault();document.getElementById("drop-ov").style.display="none";if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
 document.getElementById("fi").addEventListener("change",function(e){if(e.target.files[0])handleFile(e.target.files[0]);});
 
-/* ══ Sample data ══ */
+/* Sample */
 var SAMPLE=[
-  {date:new Date(2026,0,12),name:"New Year Kickoff",mainCat:"Internal",subCat:"Social Events",description:"Annual kickoff celebration",owner:"Marie Jensen",link:""},
+  {date:new Date(2026,0,12),name:"New Year Kickoff",mainCat:"Internal",subCat:"Social Events",description:"Annual kickoff celebration for all employees",owner:"Marie Jensen",link:"https://intellishore.dk"},
   {date:new Date(2026,0,22),name:"Data Guild Workshop",mainCat:"Internal",subCat:"Associate Guild",description:"Monthly data engineering knowledge sharing",owner:"Lars Thomsen",link:""},
-  {date:new Date(2026,1,5),name:"AI Strategy Session",mainCat:"Marketing",subCat:"AI",description:"Quarterly AI positioning review",owner:"Sofie Holm",link:""},
-  {date:new Date(2026,1,13),name:"Winter Team Day",mainCat:"Internal",subCat:"Teambuilding Days",description:"Cross-team winter activities",owner:"Peter Eriksen",link:""},
-  {date:new Date(2026,1,25),name:"HIMSS Europe",mainCat:"External",subCat:"Conferences",description:"Healthcare IT conference",owner:"Mads Larsen",link:"https://himss.org"},
-  {date:new Date(2026,2,5),name:"Health 3.0 Meetup",mainCat:"External",subCat:"Health 3.0",description:"Monthly health tech meetup",owner:"Anna Bak",link:""},
+  {date:new Date(2026,1,5),name:"AI Strategy Session",mainCat:"Marketing",subCat:"AI",description:"Quarterly AI positioning and go-to-market review",owner:"Sofie Holm",link:""},
+  {date:new Date(2026,1,13),name:"Winter Team Day",mainCat:"Internal",subCat:"Teambuilding Days",description:"Cross-team winter activities and dinner",owner:"Peter Eriksen",link:""},
+  {date:new Date(2026,1,25),name:"HIMSS Europe",mainCat:"External",subCat:"Conferences",description:"Healthcare IT conference in Helsinki",owner:"Mads Larsen",link:"https://himss.org"},
+  {date:new Date(2026,2,5),name:"Health 3.0 Meetup",mainCat:"External",subCat:"Health 3.0",description:"Monthly health tech community meetup",owner:"Anna Bak",link:""},
   {date:new Date(2026,2,12),name:"AE Workshop",mainCat:"Marketing",subCat:"AE",description:"Analytics engineering brand positioning",owner:"Kasper Lund",link:""},
   {date:new Date(2026,2,20),name:"Spring Social",mainCat:"Internal",subCat:"Social Events",description:"Friday bar and spring celebration",owner:"Marie Jensen",link:""},
-  {date:new Date(2026,3,2),name:"AI Webinar Launch",mainCat:"External",subCat:"Webinars",description:"Public webinar on AI in pharma",owner:"Sofie Holm",link:""},
-  {date:new Date(2026,3,15),name:"Strategy Offsite",mainCat:"Marketing",subCat:"Strategy",description:"Annual strategy and growth planning",owner:"Henrik Madsen",link:""},
-  {date:new Date(2026,3,23),name:"Health 3.0 Summit",mainCat:"External",subCat:"Health 3.0",description:"Annual flagship event",owner:"Anna Bak",link:"https://health3.dk"},
-  {date:new Date(2026,4,7),name:"Summer Hackathon",mainCat:"Internal",subCat:"Teambuilding Days",description:"48-hour innovation hackathon",owner:"Lars Thomsen",link:""},
-  {date:new Date(2026,4,14),name:"Data Conference CPH",mainCat:"External",subCat:"Conferences",description:"Copenhagen data conference",owner:"Mads Larsen",link:""},
-  {date:new Date(2026,4,21),name:"AI Content Sprint",mainCat:"Marketing",subCat:"AI",description:"AI thought leadership content",owner:"Sofie Holm",link:""},
-  {date:new Date(2026,5,4),name:"MedTech Webinar",mainCat:"External",subCat:"Webinars",description:"Data platforms for medtech",owner:"Kasper Lund",link:""},
-  {date:new Date(2026,5,19),name:"Midsummer Party",mainCat:"Internal",subCat:"Social Events",description:"Annual midsummer celebration",owner:"Marie Jensen",link:""},
-  {date:new Date(2026,5,25),name:"Strategy Review Q2",mainCat:"Marketing",subCat:"Strategy",description:"Q2 review and H2 planning",owner:"Henrik Madsen",link:""},
-  {date:new Date(2026,6,3),name:"Summer Party",mainCat:"Internal",subCat:"Social Events",description:"Big summer party for all",owner:"Marie Jensen",link:""},
-  {date:new Date(2026,6,9),name:"Health 3.0 Workshop",mainCat:"External",subCat:"Health 3.0",description:"Interoperability standards",owner:"Anna Bak",link:""},
-  {date:new Date(2026,6,16),name:"Team Adventure",mainCat:"Internal",subCat:"Teambuilding Days",description:"Outdoor adventure day",owner:"Peter Eriksen",link:""},
-  {date:new Date(2026,7,6),name:"AI Webinar Advanced",mainCat:"External",subCat:"Webinars",description:"Advanced AI patterns",owner:"Sofie Holm",link:""},
-  {date:new Date(2026,7,13),name:"Data Guild Offsite",mainCat:"Internal",subCat:"Associate Guild",description:"Guild offsite with workshops",owner:"Lars Thomsen",link:""},
-  {date:new Date(2026,7,20),name:"AI Thought Leadership",mainCat:"Marketing",subCat:"AI",description:"Articles and LinkedIn campaign",owner:"Sofie Holm",link:""},
-  {date:new Date(2026,8,3),name:"Nordic Health Summit",mainCat:"External",subCat:"Conferences",description:"Major Nordic healthcare summit",owner:"Mads Larsen",link:""},
-  {date:new Date(2026,8,10),name:"Strategy Day",mainCat:"Marketing",subCat:"Strategy",description:"Full-day strategy session",owner:"Henrik Madsen",link:""},
-  {date:new Date(2026,8,18),name:"Autumn Social",mainCat:"Internal",subCat:"Social Events",description:"Autumn social and quiz night",owner:"Marie Jensen",link:""},
-  {date:new Date(2026,8,24),name:"AE Webinar",mainCat:"External",subCat:"Webinars",description:"Analytics engineering best practices",owner:"Kasper Lund",link:""},
-  {date:new Date(2026,9,1),name:"Cloud Certification",mainCat:"Internal",subCat:"Associate Guild",description:"Certification prep day",owner:"Thomas Nielsen",link:""},
-  {date:new Date(2026,9,8),name:"Health 3.0 Quarterly",mainCat:"External",subCat:"Health 3.0",description:"Quarterly community gathering",owner:"Anna Bak",link:""},
-  {date:new Date(2026,9,15),name:"AE Brand Review",mainCat:"Marketing",subCat:"AE",description:"Refresh AE brand materials",owner:"Henrik Madsen",link:""},
+  {date:new Date(2026,2,26),name:"Cloud Guild Deep Dive",mainCat:"Internal",subCat:"Associate Guild",description:"Deep dive into cloud architecture patterns",owner:"Thomas Nielsen",link:""},
+  {date:new Date(2026,3,2),name:"AI Webinar Launch",mainCat:"External",subCat:"Webinars",description:"Public webinar on AI in pharma",owner:"Sofie Holm",link:"https://intellishore.dk/webinars"},
+  {date:new Date(2026,3,15),name:"Strategy Offsite",mainCat:"Marketing",subCat:"Strategy",description:"Annual strategy and growth planning offsite",owner:"Henrik Madsen",link:""},
+  {date:new Date(2026,3,23),name:"Health 3.0 Summit",mainCat:"External",subCat:"Health 3.0",description:"Annual Health 3.0 flagship event",owner:"Anna Bak",link:"https://health3.dk"},
+  {date:new Date(2026,4,7),name:"Summer Hackathon",mainCat:"Internal",subCat:"Teambuilding Days",description:"48-hour innovation hackathon with prizes",owner:"Lars Thomsen",link:""},
+  {date:new Date(2026,4,14),name:"Data Conference CPH",mainCat:"External",subCat:"Conferences",description:"Copenhagen data and analytics conference",owner:"Mads Larsen",link:"https://dataconf.dk"},
+  {date:new Date(2026,4,21),name:"AI Content Sprint",mainCat:"Marketing",subCat:"AI",description:"Create AI thought leadership content batch",owner:"Sofie Holm",link:""},
+  {date:new Date(2026,4,28),name:"Guild Summit",mainCat:"Internal",subCat:"Associate Guild",description:"Annual guild summit with all tracks",owner:"Thomas Nielsen",link:""},
+  {date:new Date(2026,5,4),name:"MedTech Webinar",mainCat:"External",subCat:"Webinars",description:"Webinar on data platforms for medtech",owner:"Kasper Lund",link:""},
+  {date:new Date(2026,5,11),name:"AE Campaign",mainCat:"Marketing",subCat:"AE",description:"Launch analytics engineering campaign",owner:"Henrik Madsen",link:""},
+  {date:new Date(2026,5,19),name:"Midsummer Party",mainCat:"Internal",subCat:"Social Events",description:"Annual midsummer celebration at the office",owner:"Marie Jensen",link:""},
+  {date:new Date(2026,5,25),name:"Strategy Review Q2",mainCat:"Marketing",subCat:"Strategy",description:"Q2 strategy review and H2 planning",owner:"Henrik Madsen",link:""},
+  {date:new Date(2026,6,3),name:"Summer Party",mainCat:"Internal",subCat:"Social Events",description:"Big summer party for all employees and families",owner:"Marie Jensen",link:""},
+  {date:new Date(2026,6,9),name:"Health 3.0 Workshop",mainCat:"External",subCat:"Health 3.0",description:"Workshop on interoperability standards",owner:"Anna Bak",link:""},
+  {date:new Date(2026,6,16),name:"Team Adventure",mainCat:"Internal",subCat:"Teambuilding Days",description:"Outdoor adventure day for the whole company",owner:"Peter Eriksen",link:""},
+  {date:new Date(2026,7,6),name:"AI Webinar Advanced",mainCat:"External",subCat:"Webinars",description:"Advanced AI implementation patterns webinar",owner:"Sofie Holm",link:""},
+  {date:new Date(2026,7,13),name:"Data Guild Offsite",mainCat:"Internal",subCat:"Associate Guild",description:"Guild offsite with workshops and talks",owner:"Lars Thomsen",link:""},
+  {date:new Date(2026,7,20),name:"AI Thought Leadership",mainCat:"Marketing",subCat:"AI",description:"AI positioning articles and LinkedIn campaign",owner:"Sofie Holm",link:""},
+  {date:new Date(2026,8,3),name:"Nordic Health Summit",mainCat:"External",subCat:"Conferences",description:"Major Nordic healthcare technology summit",owner:"Mads Larsen",link:"https://nordichealthsummit.dk"},
+  {date:new Date(2026,8,10),name:"Strategy Day",mainCat:"Marketing",subCat:"Strategy",description:"Full-day company strategy session",owner:"Henrik Madsen",link:""},
+  {date:new Date(2026,8,18),name:"Autumn Social",mainCat:"Internal",subCat:"Social Events",description:"Autumn social event and quiz night",owner:"Marie Jensen",link:""},
+  {date:new Date(2026,8,24),name:"AE Webinar",mainCat:"External",subCat:"Webinars",description:"Public webinar on analytics engineering best practices",owner:"Kasper Lund",link:""},
+  {date:new Date(2026,9,1),name:"Cloud Certification",mainCat:"Internal",subCat:"Associate Guild",description:"Group certification prep and exam day",owner:"Thomas Nielsen",link:""},
+  {date:new Date(2026,9,8),name:"Health 3.0 Quarterly",mainCat:"External",subCat:"Health 3.0",description:"Quarterly health tech community gathering",owner:"Anna Bak",link:""},
+  {date:new Date(2026,9,15),name:"AE Brand Review",mainCat:"Marketing",subCat:"AE",description:"Review and refresh AE brand materials",owner:"Henrik Madsen",link:""},
   {date:new Date(2026,9,29),name:"Halloween Team Event",mainCat:"Internal",subCat:"Teambuilding Days",description:"Halloween themed team building",owner:"Peter Eriksen",link:""},
-  {date:new Date(2026,10,5),name:"Dreamforce Watch",mainCat:"External",subCat:"Conferences",description:"Keynote watch party",owner:"Mads Larsen",link:""},
-  {date:new Date(2026,10,12),name:"AI Strategy Update",mainCat:"Marketing",subCat:"AI",description:"AI go-to-market for 2027",owner:"Sofie Holm",link:""},
-  {date:new Date(2026,10,20),name:"November Social",mainCat:"Internal",subCat:"Social Events",description:"Pre-holiday gathering",owner:"Marie Jensen",link:""},
-  {date:new Date(2026,10,26),name:"Strategy 2027",mainCat:"Marketing",subCat:"Strategy",description:"Annual planning for next year",owner:"Henrik Madsen",link:""},
-  {date:new Date(2026,11,3),name:"Year in Review Webinar",mainCat:"External",subCat:"Webinars",description:"Year in review and 2027 outlook",owner:"Sofie Holm",link:""},
-  {date:new Date(2026,11,11),name:"Christmas Party",mainCat:"Internal",subCat:"Social Events",description:"Annual christmas party",owner:"Marie Jensen",link:""},
-  {date:new Date(2026,11,17),name:"Data Guild Awards",mainCat:"Internal",subCat:"Associate Guild",description:"Annual guild awards",owner:"Lars Thomsen",link:""}
+  {date:new Date(2026,10,5),name:"Dreamforce Watch",mainCat:"External",subCat:"Conferences",description:"Dreamforce keynote watch party and discussion",owner:"Mads Larsen",link:""},
+  {date:new Date(2026,10,12),name:"AI Strategy Update",mainCat:"Marketing",subCat:"AI",description:"Update AI go-to-market for 2027",owner:"Sofie Holm",link:""},
+  {date:new Date(2026,10,20),name:"November Social",mainCat:"Internal",subCat:"Social Events",description:"Pre-holiday social gathering",owner:"Marie Jensen",link:""},
+  {date:new Date(2026,10,26),name:"Strategy 2027",mainCat:"Marketing",subCat:"Strategy",description:"Annual strategy planning for next year",owner:"Henrik Madsen",link:""},
+  {date:new Date(2026,11,3),name:"Year in Review Webinar",mainCat:"External",subCat:"Webinars",description:"Public year in review and 2027 outlook webinar",owner:"Sofie Holm",link:""},
+  {date:new Date(2026,11,11),name:"Christmas Party",mainCat:"Internal",subCat:"Social Events",description:"Annual christmas party and dinner",owner:"Marie Jensen",link:""},
+  {date:new Date(2026,11,17),name:"Data Guild Awards",mainCat:"Internal",subCat:"Associate Guild",description:"Annual guild awards and knowledge celebration",owner:"Lars Thomsen",link:""}
 ];
 
-/* ══ Boot ══ */
+/* Boot */
 var xhr=new XMLHttpRequest();
 xhr.open("GET",CSV_FILE,true);
 xhr.onreadystatechange=function(){
@@ -929,8 +571,7 @@ xhr.onreadystatechange=function(){
   if(xhr.status>=200&&xhr.status<300&&xhr.responseText&&xhr.responseText.length>10){
     try{var evts=parseRows(parseCSV(xhr.responseText));if(evts.length>0){useSample=false;apply(evts);return;}}catch(e){}
   }
-  useSample=true;
-  setTimeout(function(){apply(SAMPLE);},300);
+  useSample=true;setTimeout(function(){apply(SAMPLE);},300);
 };
 xhr.onerror=function(){useSample=true;setTimeout(function(){apply(SAMPLE);},300);};
 xhr.send();
